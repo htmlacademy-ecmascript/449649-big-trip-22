@@ -17,10 +17,10 @@ export default class TripPresenter {
     render(new SortView(), this.tripContainer);
     render(this.tripViewComponent, this.tripContainer);
     render(this.pointListViewComponent, this.tripContainer);
-    render(new EditView(), this.tripContainer);
+    render(new EditView(), this.pointListViewComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.tripContainer);
+      render(new PointView(), this.pointListViewComponent.getElement());
     }
   }
 }
