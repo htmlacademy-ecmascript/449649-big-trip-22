@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../util.js';
+import { getRandomInteger } from './util.js';
 
 const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint Petersburg', 'Vienna'];
 const DESTINATION_DESCRIPTION = [
@@ -37,4 +37,4 @@ const generateDestination = () => {
   };
 };
 
-export {generateDestination};
+export { generateDestination };
