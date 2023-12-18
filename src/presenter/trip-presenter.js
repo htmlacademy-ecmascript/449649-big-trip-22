@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
@@ -24,10 +24,10 @@ export default class TripPresenter {
       render(new SortView(), this.tripContainer);
       render(this.tripViewComponent, this.tripContainer);
       render(this.pointListViewComponent, this.tripContainer);
-      render(new EditView({ point: this.pointsModel[0] }), this.pointListViewComponent.getElement());
+      render(new EditView({ point: this.pointsModel[0] }), this.pointListViewComponent.element);
 
       for (let i = 0; i < this.pointsModel.length; i++) {
-        render(new PointView({ point: this.pointsModel[i] }), this.pointListViewComponent.getElement());
+        render(new PointView({ point: this.pointsModel[i] }), this.pointListViewComponent.element);
       }
     }
   }

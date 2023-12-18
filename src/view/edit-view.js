@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {
@@ -153,24 +153,15 @@ export const createEditViewTemplate = (point = {}) => {
   );
 };
 
-export default class EditView {
+export default class EditView extends AbstractView {
+  #point = null;
+
   constructor({ point = BLANK_POINT }) {
-    this.point = point;
+    super();
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createEditViewTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditViewTemplate(this.#point);
   }
 }
