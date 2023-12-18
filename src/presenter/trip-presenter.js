@@ -28,12 +28,16 @@ export default class TripPresenter {
       render(new SortView(), this.#tripContainer);
       render(this.#tripViewComponent, this.#tripContainer);
       render(this.#pointListViewComponent, this.#tripContainer);
-      render(new EditView({ point: this.#pointsModel[0] }), this.#pointListViewComponent.element);
 
       for (let i = 0; i < this.#pointsModel.length; i++) {
-        render(new PointView({ point: this.#pointsModel[i] }), this.#pointListViewComponent.element);
+        this.#renderPoint(this.#pointsModel[i]);
       }
     }
+  }
+
+  #renderPoint(point) {
+    const pointComponent = new PointView({ point });
+    render(pointComponent, this.#pointListViewComponent.element);
   }
 }
 
