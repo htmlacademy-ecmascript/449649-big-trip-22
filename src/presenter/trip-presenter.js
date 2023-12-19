@@ -22,18 +22,7 @@ export default class TripPresenter {
 
   init() {
     this.#pointsModel = [...this.#pointsModel.points];
-
-    if (this.#pointsModel.length === 0) {
-      render(new NoPointView(), this.#tripContainer);
-    } else {
-      render(new SortView(), this.#tripContainer);
-      render(this.#tripViewComponent, this.#tripContainer);
-      render(this.#pointListViewComponent, this.#tripContainer);
-
-      for (let i = 0; i < this.#pointsModel.length; i++) {
-        this.#renderPoint(this.#pointsModel[i]);
-      }
-    }
+    this.#renderPoints();
   }
 
   #renderPoint(point) {
@@ -70,6 +59,20 @@ export default class TripPresenter {
     }
 
     render(pointViewComponent, this.#pointListViewComponent.element);
+  }
+
+  #renderPoints() {
+    if (this.#pointsModel.length === 0) {
+      render(new NoPointView(), this.#tripContainer);
+    } else {
+      render(new SortView(), this.#tripContainer);
+      render(this.#tripViewComponent, this.#tripContainer);
+      render(this.#pointListViewComponent, this.#tripContainer);
+
+      for (let i = 0; i < this.#pointsModel.length; i++) {
+        this.#renderPoint(this.#pointsModel[i]);
+      }
+    }
   }
 }
 
