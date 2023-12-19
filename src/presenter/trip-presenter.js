@@ -44,7 +44,7 @@ export default class TripPresenter {
 
     const pointEditComponent = new EditView({
       point,
-      onCloseClick: () => {
+      onSubmitForm: () => {
         changePointToReadView();
         document.removeEventListener('keydown', onEscKeyDown);
       }
