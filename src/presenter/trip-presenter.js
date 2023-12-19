@@ -1,4 +1,5 @@
-import { render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
+import { isEscapeKey } from '../utilities.js';
 import PointView from '../view/point-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
@@ -36,8 +37,39 @@ export default class TripPresenter {
   }
 
   #renderPoint(point) {
-    const pointComponent = new PointView({ point });
-    render(pointComponent, this.#pointListViewComponent.element);
+    const onEscKeyDown = (evt) => {
+      if (isEscapeKey(evt)) {
+        evt.preventDefault();
+        changePointToReadView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    const pointViewComponent = new PointView({
+      point,
+      onOpenClick: () => {
+        changePointToEditView();
+        document.addEventListener('keydown', onEscKeyDown);
+      }
+    });
+
+    const pointEditComponent = new EditView({
+      point,
+      onCloseClick: () => {
+        changePointToReadView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    });
+
+    function changePointToEditView() {
+      replace(pointEditComponent, pointViewComponent);
+    }
+
+    function changePointToReadView() {
+      replace(pointViewComponent, pointEditComponent);
+    }
+
+    render(pointViewComponent, this.#pointListViewComponent.element);
   }
 }
 

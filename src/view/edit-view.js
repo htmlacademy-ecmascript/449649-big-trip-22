@@ -155,13 +155,22 @@ export const createEditViewTemplate = (point = {}) => {
 
 export default class EditView extends AbstractView {
   #point = null;
+  #handleCloseClick = null;
 
-  constructor({ point = BLANK_POINT }) {
+  constructor({ point = BLANK_POINT, onCloseClick }) {
     super();
     this.#point = point;
+    this.#handleCloseClick = onCloseClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleCloseClick);
   }
 
   get template() {
     return createEditViewTemplate(this.#point);
   }
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 }
