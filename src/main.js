@@ -8,8 +8,7 @@ const tripMain = document.querySelector('.trip-main');
 const tripFilters = document.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel();
-const tripPresenter = new TripPresenter({ tripContainer: tripEvents, pointsModel });
+const tripPresenter = new TripPresenter({ tripContainer: tripEvents, pointsModel: new PointsModel() });
 
 render(new BriefView, tripMain, RenderPosition.AFTERBEGIN);
 render(new FilterView(), tripFilters);
