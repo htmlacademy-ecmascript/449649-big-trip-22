@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {
@@ -153,24 +153,24 @@ export const createEditViewTemplate = (point = {}) => {
   );
 };
 
-export default class EditView {
-  constructor({ point = BLANK_POINT }) {
-    this.point = point;
+export default class EditView extends AbstractView {
+  #point = null;
+  #handleCloseClick = null;
+
+  constructor({ point = BLANK_POINT, onSubmitForm }) {
+    super();
+    this.#point = point;
+    this.#handleCloseClick = onSubmitForm;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleCloseClick);
   }
 
-  getTemplate() {
-    return createEditViewTemplate(this.point);
+  get template() {
+    return createEditViewTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 }

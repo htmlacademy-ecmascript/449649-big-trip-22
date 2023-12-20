@@ -1,4 +1,5 @@
-import { render } from '../render.js';
+import { render, replace } from '../framework/render.js';
+import { isEscapeKey } from '../utilities.js';
 import PointView from '../view/point-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
@@ -7,27 +8,69 @@ import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
 
 export default class TripPresenter {
-  tripViewComponent = new TripView();
-  pointListViewComponent = new PointListView();
+  #tripContainer = null;
+
+  #tripViewComponent = new TripView();
+  #pointListViewComponent = new PointListView();
+
+  #pointsModel = [];
 
   constructor({ tripContainer, pointsModel }) {
-    this.tripContainer = tripContainer;
-    this.pointsModel = pointsModel;
+    this.#tripContainer = tripContainer;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.pointsModel = [...this.pointsModel.getPoints()];
+    this.#pointsModel = [...this.#pointsModel.points];
+    this.#renderPoints();
+  }
 
-    if (this.pointsModel.length === 0) {
-      render(new NoPointView(), this.tripContainer);
+  #renderPoint(point) {
+    const onEscKeyDown = (evt) => {
+      if (isEscapeKey(evt)) {
+        evt.preventDefault();
+        changePointToReadView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    const pointViewComponent = new PointView({
+      point,
+      onOpenClick: () => {
+        changePointToEditView();
+        document.addEventListener('keydown', onEscKeyDown);
+      }
+    });
+
+    const pointEditComponent = new EditView({
+      point,
+      onSubmitForm: () => {
+        changePointToReadView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    });
+
+    function changePointToEditView() {
+      replace(pointEditComponent, pointViewComponent);
+    }
+
+    function changePointToReadView() {
+      replace(pointViewComponent, pointEditComponent);
+    }
+
+    render(pointViewComponent, this.#pointListViewComponent.element);
+  }
+
+  #renderPoints() {
+    if (this.#pointsModel.length === 0) {
+      render(new NoPointView(), this.#tripContainer);
     } else {
-      render(new SortView(), this.tripContainer);
-      render(this.tripViewComponent, this.tripContainer);
-      render(this.pointListViewComponent, this.tripContainer);
-      render(new EditView({ point: this.pointsModel[0] }), this.pointListViewComponent.getElement());
+      render(new SortView(), this.#tripContainer);
+      render(this.#tripViewComponent, this.#tripContainer);
+      render(this.#pointListViewComponent, this.#tripContainer);
 
-      for (let i = 0; i < this.pointsModel.length; i++) {
-        render(new PointView({ point: this.pointsModel[i] }), this.pointListViewComponent.getElement());
+      for (let i = 0; i < this.#pointsModel.length; i++) {
+        this.#renderPoint(this.#pointsModel[i]);
       }
     }
   }

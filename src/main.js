@@ -2,7 +2,7 @@ import BriefView from './view/brief-view.js';
 import FilterView from './view/filters-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/points-model.js';
-import { RenderPosition, render } from './render.js';
+import { RenderPosition, render } from './framework/render.js';
 
 const tripMain = document.querySelector('.trip-main');
 const tripFilters = document.querySelector('.trip-controls__filters');
