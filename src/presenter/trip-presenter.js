@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render.js';
+import { render, RenderPosition, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utilities.js';
 import PointView from '../view/point-view.js';
 import NoPointView from '../view/no-point-view.js';
@@ -13,6 +13,8 @@ export default class TripPresenter {
 
   #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
+  #sortComponent = new SortView();
+  #noPointViewComponent = new NoPointView();
 
   #points = [];
 
@@ -23,7 +25,23 @@ export default class TripPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
-    this.#renderPoints();
+    this.#renderTrip();
+  }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderNoPoints() {
+    render(this.#noPointViewComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderPointsListView() {
+    render(this.#pointListViewComponent, this.#tripContainer);
+  }
+
+  #renderTripView() {
+    render(this.#tripViewComponent, this.#tripContainer);
   }
 
   #renderPoint(point) {
@@ -63,16 +81,19 @@ export default class TripPresenter {
   }
 
   #renderPoints() {
-    if (this.#points.length === 0) {
-      render(new NoPointView(), this.#tripContainer);
-    } else {
-      render(new SortView(), this.#tripContainer);
-      render(this.#tripViewComponent, this.#tripContainer);
-      render(this.#pointListViewComponent, this.#tripContainer);
+    for (const point of this.#points) {
+      this.#renderPoint(point);
+    }
+  }
 
-      for (const point of this.#points) {
-        this.#renderPoint(point);
-      }
+  #renderTrip() {
+    if (this.#points.length === 0) {
+      this.#renderNoPoints();
+    } else {
+      this.#renderTripView();
+      this.#renderSort();
+      this.#renderPointsListView();
+      this.#renderPoints();
     }
   }
 }
