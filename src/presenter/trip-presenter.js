@@ -9,11 +9,12 @@ import TripView from '../view/trip-view.js';
 
 export default class TripPresenter {
   #tripContainer = null;
+  #pointsModel = null;
 
   #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
 
-  #pointsModel = [];
+  #points = [];
 
   constructor({ tripContainer, pointsModel }) {
     this.#tripContainer = tripContainer;
@@ -21,7 +22,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#pointsModel = [...this.#pointsModel.points];
+    this.#points = [...this.#pointsModel.points];
     this.#renderPoints();
   }
 
@@ -62,15 +63,15 @@ export default class TripPresenter {
   }
 
   #renderPoints() {
-    if (this.#pointsModel.length === 0) {
+    if (this.#points.length === 0) {
       render(new NoPointView(), this.#tripContainer);
     } else {
       render(new SortView(), this.#tripContainer);
       render(this.#tripViewComponent, this.#tripContainer);
       render(this.#pointListViewComponent, this.#tripContainer);
 
-      for (let i = 0; i < this.#pointsModel.length; i++) {
-        this.#renderPoint(this.#pointsModel[i]);
+      for (const point of this.#points) {
+        this.#renderPoint(point);
       }
     }
   }
