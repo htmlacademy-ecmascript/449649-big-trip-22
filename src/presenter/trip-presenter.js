@@ -15,6 +15,7 @@ export default class TripPresenter {
   #noPointViewComponent = new NoPointView();
 
   #points = [];
+  #pointPresenters = new Map();
 
   constructor({ tripContainer, pointsModel }) {
     this.#tripContainer = tripContainer;
@@ -47,12 +48,18 @@ export default class TripPresenter {
       pointListContainer: this.#pointListViewComponent.element
     });
     pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #renderPoints() {
     for (const point of this.#points) {
       this.#renderPoint(point);
     }
+  }
+
+  #clearPointsList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 
   #renderTrip() {
