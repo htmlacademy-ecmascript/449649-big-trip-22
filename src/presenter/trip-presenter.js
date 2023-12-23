@@ -4,6 +4,7 @@ import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
+import { updateItem } from '../utilities.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -30,6 +31,11 @@ export default class TripPresenter {
   #renderSort() {
     render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
   }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
 
   #renderNoPoints() {
     render(this.#noPointViewComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
