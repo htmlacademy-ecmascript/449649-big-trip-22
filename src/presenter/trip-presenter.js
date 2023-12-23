@@ -1,9 +1,7 @@
-import { render, RenderPosition, replace } from '../framework/render.js';
-import { isEscapeKey } from '../utilities.js';
-import PointView from '../view/point-view.js';
+import { render, RenderPosition } from '../framework/render.js';
+import PointPresenter from './point-presenter.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
-import EditView from '../view/edit-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
 
@@ -45,39 +43,10 @@ export default class TripPresenter {
   }
 
   #renderPoint(point) {
-    const onEscKeyDown = (evt) => {
-      if (isEscapeKey(evt)) {
-        evt.preventDefault();
-        changePointToReadView();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    const pointViewComponent = new PointView({
-      point,
-      onOpenClick: () => {
-        changePointToEditView();
-        document.addEventListener('keydown', onEscKeyDown);
-      }
+    const pointPresenter = new PointPresenter({
+      pointListContainer: this.#pointListViewComponent.element
     });
-
-    const pointEditComponent = new EditView({
-      point,
-      onSubmitForm: () => {
-        changePointToReadView();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    });
-
-    function changePointToEditView() {
-      replace(pointEditComponent, pointViewComponent);
-    }
-
-    function changePointToReadView() {
-      replace(pointViewComponent, pointEditComponent);
-    }
-
-    render(pointViewComponent, this.#pointListViewComponent.element);
+    pointPresenter.init(point);
   }
 
   #renderPoints() {

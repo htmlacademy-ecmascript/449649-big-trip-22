@@ -157,12 +157,12 @@ export default class EditView extends AbstractView {
   #point = null;
   #handleCloseClick = null;
 
-  constructor({ point = BLANK_POINT, onSubmitForm }) {
+  constructor({ point = BLANK_POINT, onCloseClick }) {
     super();
     this.#point = point;
-    this.#handleCloseClick = onSubmitForm;
+    this.#handleCloseClick = onCloseClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleCloseClick);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
   }
 
   get template() {
