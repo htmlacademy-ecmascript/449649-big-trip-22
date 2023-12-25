@@ -2,7 +2,7 @@ import { filter } from '../utilities';
 
 const generateFilter = (points) => Object.entries(filter).map(
   ([filterType, filterTasks]) => ({
-    name: filterType,
+    type: filterType,
     count: filterTasks(points).length
   })
 );
