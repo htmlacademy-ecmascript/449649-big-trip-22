@@ -4,7 +4,9 @@ import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
-import { updateItem } from '../utilities.js';
+import { updateItem, sortPrice, sortTime } from '../utilities.js';
+import { SortType } from '../const.js';
+
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -12,11 +14,13 @@ export default class TripPresenter {
 
   #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #noPointViewComponent = new NoPointView();
 
   #points = [];
   #pointPresenters = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedPoints = [];
 
   constructor({ tripContainer, pointsModel }) {
     this.#tripContainer = tripContainer;
@@ -25,10 +29,22 @@ export default class TripPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
+    this.#sourcedPoints = [...this.#pointsModel.points];
     this.#renderTrip();
   }
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointsList();
+    this.#renderPoints();
+  };
+
   #renderSort() {
+    this.#sortComponent = new SortView({ onSortTypeChange: this.#handleSortTypeChange });
     render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
   }
 
@@ -38,8 +54,24 @@ export default class TripPresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
+    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
+
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.TIME:
+        this.#points.sort(sortTime);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortPrice);
+        break;
+      default:
+        this.#points = [...this.#sourcedPoints];
+    }
+
+    this.#currentSortType = sortType;
+  }
 
   #renderNoPoints() {
     render(this.#noPointViewComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
