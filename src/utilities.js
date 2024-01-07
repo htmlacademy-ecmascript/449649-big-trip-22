@@ -16,11 +16,11 @@ const formatDate = (date) => date ? dayjs(date).format('MMM DD') : '';
 const formatTime = (date) => date ? dayjs(date).format('HH:mm') : '';
 const getTimeDiff = (dateFrom, dateTo) => dayjs(dateTo).diff(dateFrom, 'minute');
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
-const sortPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
-const sortTime = (eventA, eventB) => {
+const sortPointsByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
+const sortPointsByTime = (eventA, eventB) => {
   const durationA = dayjs(eventA.dateTo).diff(eventA.dateFrom);
   const durationB = dayjs(eventB.dateTo).diff(eventB.dateFrom);
   return durationB - durationA;
 };
 
-export { formatDate, formatTime, getTimeDiff, isEscapeKey, updateItem, sortPrice, sortTime, filter };
+export { formatDate, formatTime, getTimeDiff, isEscapeKey, updateItem, sortPointsByPrice, sortPointsByTime, filter };
