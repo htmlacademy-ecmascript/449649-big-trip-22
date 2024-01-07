@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {
@@ -52,9 +52,8 @@ const createOfferName = (offer = {}) => {
   return offerName;
 };
 
-const createOfferSelector = (point = {}) => {
+const createPointOfferSelector = (point = {}) => {
   const { offers } = point;
-
   return offers.map((offer) =>
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" checked>
@@ -66,13 +65,19 @@ const createOfferSelector = (point = {}) => {
     </div>`).join('');
 };
 
-
-const createOffersSection = (point) => (
+const createPointSectionOffers = (point) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createOfferSelector(point)}
+      ${createPointOfferSelector(point)}
     </div>
+  </section>`
+);
+
+const createPointSectionDestination = (point) => (
+  `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${point.destination.description}</p>
   </section>`
 );
 
@@ -87,7 +92,7 @@ const createPointTypeItem = (eventTypes) => {
 };
 
 export const createEditViewTemplate = (point = {}) => {
-  const { type, dateFrom, dateTo, basePrice, destination, offers } = point;
+  const { type, dateFrom, dateTo, basePrice, destination, offers, isOffers, isDestination } = point;
 
   return (
     `<li class="trip-events__item">
@@ -143,9 +148,8 @@ export const createEditViewTemplate = (point = {}) => {
           </button>
         </header>
         <section class="event__details">
-            ${offers.length > 0 ? createOffersSection(point) : ''}
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destination.description}</p>
+            ${isOffers ? createPointSectionOffers(point) : ''}
+            ${isDestination ? createPointSectionDestination(point) : ''}
           </section>
         </section>
       </form>
@@ -153,24 +157,38 @@ export const createEditViewTemplate = (point = {}) => {
   );
 };
 
-export default class EditView extends AbstractView {
+export default class EditView extends AbstractStatefulView {
   #point = null;
   #handleCloseClick = null;
 
   constructor({ point = BLANK_POINT, onCloseClick }) {
     super();
-    this.#point = point;
+    this._state = EditView.parseEventToState(point);
     this.#handleCloseClick = onCloseClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
   }
 
   get template() {
-    return createEditViewTemplate(this.#point);
+    return createEditViewTemplate(this._state);
   }
 
   #closeClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleCloseClick(this.#point);
+    this.#handleCloseClick(EditView.parseStateToEvent(this._state));
   };
+
+  static parseEventToState(event) {
+    return {...event,
+      isOffers: event.offers.length > 0,
+      isDestination: event.destination
+    };
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+    delete event.isOffers;
+    delete event.isDestination;
+    return event;
+  }
 }
