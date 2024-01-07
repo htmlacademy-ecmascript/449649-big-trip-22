@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
+import { POINT_TYPES } from '../const.js';
 
 const BLANK_POINT = {
   type: '',
@@ -12,19 +13,6 @@ const BLANK_POINT = {
     description: '',
     pictures: [],
   },
-};
-
-const POINT_TYPES = {
-  TAXI: 'taxi',
-  BUS: 'bus',
-  TRAIN: 'train',
-  SHIP: 'ship',
-  TRANSPORT: 'transport',
-  DRIVE: 'drive',
-  FLIGHT: 'flight',
-  CHECKIN: 'check-in',
-  SIGHTSEEING: 'sightseeing',
-  RESTARAUNT: 'restaurant',
 };
 
 const createOfferName = (offer = {}) => {
@@ -91,8 +79,68 @@ const createPointTypeItem = (eventTypes) => {
     </div>`).join('');
 };
 
+const createScheduleFieldHtml = (point) => {
+  const {dateFrom, dateTo} = point;
+
+  return (`
+    <div class="event__field-group  event__field-group--time">
+      <label class="visually-hidden" for="event-start-time-1">From</label>
+      <input
+        class="event__input  event__input--time"
+        id="event-start-time-1"
+        type="text"
+        name="event-start-time"
+        value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
+      —
+      <label class="visually-hidden" for="event-end-time-1">To</label>
+      <input
+        class="event__input  event__input--time"
+        id="event-end-time-1"
+        type="text"
+        name="event-end-time"
+        value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
+    </div>
+  `);
+};
+
+const createPriceFieldHtml = (point) => {
+  const {basePrice} = point;
+
+  return (`
+    <div class="event__field-group  event__field-group--price">
+      <label class="event__label" for="event-price-1">
+        <span class="visually-hidden">Price</span>
+        €
+      </label>
+      <input
+        class="event__input  event__input--price"
+        id="event-price-1"
+        type="number"
+        min="0"
+        name="event-price"
+        value="${basePrice}">
+    </div>
+  `);
+};
+
+const createSubmitButtonHtml = () =>
+  `<button
+      class="event__save-btn  btn  btn--blue"
+      type="submit">
+        Save
+    </button>
+`;
+
+const createCancelButtonHtml = () =>
+  `<button
+      class="event__reset-btn"
+      type="reset">
+        Cancel
+    </button>
+`;
+
 export const createEditViewTemplate = (point = {}) => {
-  const { type, dateFrom, dateTo, basePrice, destination, offers, isOffers, isDestination } = point;
+  const { type, destination, isOffers, isDestination } = point;
 
   return (
     `<li class="trip-events__item">
@@ -125,24 +173,10 @@ export const createEditViewTemplate = (point = {}) => {
             </datalist>
           </div>
 
-          <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
-            &mdash;
-            <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
-          </div>
-
-          <div class="event__field-group  event__field-group--price">
-            <label class="event__label" for="event-price-1">
-              <span class="visually-hidden">Price</span>
-              &euro;
-            </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
-          </div>
-
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          ${createScheduleFieldHtml(point)}
+          ${createPriceFieldHtml(point)}
+          ${createSubmitButtonHtml()}
+          ${createCancelButtonHtml()}
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>

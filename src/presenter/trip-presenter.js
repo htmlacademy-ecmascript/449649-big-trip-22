@@ -5,7 +5,7 @@ import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
 import { updateItem, sortPointsByPrice, sortPointsByTime } from '../utilities.js';
-import { SortType } from '../const.js';
+import { SORT_TYPES } from '../const.js';
 
 
 export default class TripPresenter {
@@ -19,7 +19,7 @@ export default class TripPresenter {
 
   #points = [];
   #pointPresenters = new Map();
-  #currentSortType = SortType.DEFAULT;
+  #currentSortType = SORT_TYPES.DEFAULT;
   #sourcedPoints = [];
 
   constructor({ tripContainer, pointsModel }) {
@@ -60,10 +60,10 @@ export default class TripPresenter {
 
   #sortPoints(sortType) {
     switch (sortType) {
-      case SortType.TIME:
+      case SORT_TYPES.TIME:
         this.#points.sort(sortPointsByPrice);
         break;
-      case SortType.PRICE:
+      case SORT_TYPES.PRICE:
         this.#points.sort(sortPointsByTime);
         break;
       default:

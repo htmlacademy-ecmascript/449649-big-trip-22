@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration.js';
-import { FilterType } from './const.js';
+import { FILTER_TYPES } from './const.js';
 
 dayjs.extend(durationPlugin);
 
 const filter = {
-  [FilterType.EVERYTHING]: (points) => points,
-  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
-  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
-  [FilterType.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
+  [FILTER_TYPES.EVERYTHING]: (points) => points,
+  [FILTER_TYPES.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
+  [FILTER_TYPES.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
+  [FILTER_TYPES.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
 };
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
