@@ -24,6 +24,7 @@ const createFavoriteIcon = (isFavorite = false) => (
 
 const createPointViewTemplate = (point) => {
   const { dateFrom, dateTo, destination } = point;
+  const hasOffers = point.offers.length > 0;
   const month = formatDate(dateFrom, 'MMM DD');
   const startTime = formatTime(dateFrom);
   const endTime = formatTime(dateTo);
@@ -50,7 +51,7 @@ const createPointViewTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOffer(point)}
+          ${hasOffers ? createOffer(point) : ''}
         </ul>
         ${createFavoriteIcon(point.isFavorite)}
         <button class="event__rollup-btn" type="button">

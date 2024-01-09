@@ -28,7 +28,7 @@ const generatePoint = () => {
     destination: generateDestination(),
     id: nanoid(),
     type: type.toLowerCase(),
-    offers: generateOffers(),
+    offers: generateOffers(type),
     isFavorite: Boolean(getRandomInteger(0, 1))
   };
 };

@@ -1,4 +1,5 @@
 import { getRandomInteger } from './util.js';
+import { nanoid } from 'nanoid';
 
 const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint Petersburg', 'Vienna'];
 const DESTINATION_DESCRIPTION = [
@@ -31,6 +32,7 @@ const generateDestination = () => {
   const picturesCount = getRandomInteger(0, 3);
 
   return {
+    id: nanoid(),
     description: DESTINATION_DESCRIPTION[getRandomInteger(0, DESTINATION_DESCRIPTION.length - 1)],
     name: DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)],
     pictures: new Array(picturesCount).fill().map(generatePicture),
