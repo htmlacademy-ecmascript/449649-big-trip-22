@@ -8,7 +8,7 @@ const FILTER_TYPES = {
 };
 
 const SORT_TYPES = {
-  DEFAULT: 'default',
+  DAY: 'day',
   TIME: 'time',
   PRICE: 'price',
   DISABLED: 'disabled'

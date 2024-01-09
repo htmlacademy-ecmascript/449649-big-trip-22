@@ -44,7 +44,7 @@ const createPointOfferSelector = (point = {}) => {
   const { offers } = point;
   return offers.map((offer) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" checked>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${offer.isSelected ? 'checked ' : ''}>
       <label class="event__offer-label" for="event-offer-${createOfferName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -232,11 +232,6 @@ export default class EditView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__type-group').forEach((input) => input.addEventListener('change', this.#typeSelectClickHandler));
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationSelectClickHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#basePriceChangeHandler);
-    if (this._state.hasOffers) {
-      this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
-        checkbox.addEventListener('change', this.#offerCheckboxClickHandler);
-      });
-    }
   }
 
   reset(point) {
@@ -254,39 +249,16 @@ export default class EditView extends AbstractStatefulView {
     return {...point,
       type: point.type,
       hasOffers: point.offers.length > 0,
-      selectedOffers: point.offers.filter((offer) => offer.isSelected === true),
-      hasDestination: point.destination !== null && point.destination.description.length > 0,
-      destination: point.destination
+      hasDestination: point.destination !== null && point.destination.description.length > 0
     };
   }
 
   static parseStateToPoint(state) {
     delete state.type;
     delete state.hasOffers;
-    delete state.selectedOffers;
     delete state.hasDestination;
     return state;
   }
-
-  #offerCheckboxClickHandler = (evt) => {
-    evt.preventDefault();
-    evt.target.checked = !evt.target.checked;
-    const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
-    const resultOffers = [];
-
-    checkedOffers.forEach((input) => {
-      const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
-      const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
-      resultOffers.push({
-        title: contentTitle,
-        price: Number(contentPrice),
-      });
-    });
-
-    this.updateElement({
-      offers: resultOffers,
-    });
-  };
 
   #typeSelectClickHandler = (evt) => {
     evt.preventDefault();

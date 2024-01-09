@@ -19,7 +19,7 @@ export default class TripPresenter {
 
   #points = [];
   #pointPresenters = new Map();
-  #currentSortType = SORT_TYPES.DEFAULT;
+  #currentSortType = SORT_TYPES.DAY;
   #sourcedPoints = [];
 
   constructor({ tripContainer, pointsModel }) {
@@ -61,10 +61,10 @@ export default class TripPresenter {
   #sortPoints(sortType) {
     switch (sortType) {
       case SORT_TYPES.TIME:
-        this.#points.sort(sortPointsByPrice);
+        this.#points.sort(sortPointsByTime);
         break;
       case SORT_TYPES.PRICE:
-        this.#points.sort(sortPointsByTime);
+        this.#points.sort(sortPointsByPrice);
         break;
       default:
         this.#points = [...this.#sourcedPoints];
