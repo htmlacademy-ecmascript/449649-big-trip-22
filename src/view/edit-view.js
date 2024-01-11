@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
-import { POINT_TYPES, DESTINATIONS } from '../const.js';
+import { POINT_TYPES, AVAILLABLE_DESTINATIONS } from '../const.js';
 
 const BLANK_POINT = {
   type: '',
@@ -63,12 +63,16 @@ const createPointSectionOffers = (point) => (
 );
 
 const createDestinationFieldHtml = (point) => {
-  const destinationOptions = Object.values(DESTINATIONS).reduce((optionsList, destinations) => {
-    const destinationHtml = destinations.map((destination) => (
-      `<option value="${destination.name}" data-id="${destination.id}">${destination.name}</option>`
-    )).join('');
+  const destinationOptions = AVAILLABLE_DESTINATIONS.reduce((optionsList, destGroup) => {
+    if (Array.isArray(destGroup.pictures)) {
+      const destinationHtml = destGroup.pictures.map((dest) => (
+        `<option value="${dest.name}" data-id="${dest.id}">${dest.name}</option>`
+      )).join('');
 
-    return optionsList + destinationHtml;
+      return optionsList + destinationHtml;
+    } else {
+      return optionsList; // Skip if pictures property is not an array
+    }
   }, '');
 
   return (`
@@ -171,7 +175,7 @@ const createCancelButtonHtml = () =>
 `;
 
 const createEditViewTemplate = (point = {}) => {
-  const hasOffers = point.offers.length > 0;
+  const hasOffers = point.offers !== null && point.offers.length > 0;
   const hasDestination = point.destination !== null;
 
   return (
@@ -229,9 +233,10 @@ export default class EditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
     this.element.querySelectorAll('.event__type-group').forEach((input) => input.addEventListener('change', this.#typeSelectClickHandler));
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationSelectClickHandler);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#basePriceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
   }
 
   reset(point) {
@@ -249,14 +254,18 @@ export default class EditView extends AbstractStatefulView {
     return {...point,
       type: point.type,
       hasOffers: point.offers.length > 0,
-      hasDestination: point.destination !== null && point.destination.description.length > 0
+      offers: point.offers,
+      hasDestination: point.destination !== null && point.destination.description.length > 0,
+      destination: point.destination,
     };
   }
 
   static parseStateToPoint(state) {
     delete state.type;
     delete state.hasOffers;
+    delete state.offers;
     delete state.hasDestination;
+    delete state.destination;
     return state;
   }
 
@@ -267,29 +276,34 @@ export default class EditView extends AbstractStatefulView {
     });
   };
 
-  #basePriceChangeHandler = (evt) => {
-    evt.preventDefault();
-    this.updateElement({
-      basePrice: evt.target.value
-    });
-  };
-
   #destinationSelectClickHandler = (evt) => {
     const selectedDestinationName = evt.target.value;
     let selectedDestination = null;
 
-    for (const city in DESTINATIONS) {
-      selectedDestination = DESTINATIONS[city].find((destination) => destination.name === selectedDestinationName);
-      if (selectedDestination) {
+    for (const city in AVAILLABLE_DESTINATIONS) {
+      if (AVAILLABLE_DESTINATIONS[city].name === selectedDestinationName) {
+        selectedDestination = AVAILLABLE_DESTINATIONS[city];
         break;
       }
     }
 
     if (selectedDestination) {
       this.updateElement({
-        destination: selectedDestination
+        destination: {
+          id: selectedDestination.id,
+          name: selectedDestination.name,
+          description: selectedDestination.description,
+          pictures: selectedDestination.pictures
+        }
       });
     }
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value
+    });
   };
 
   #formSubmitHandler = (evt) => {

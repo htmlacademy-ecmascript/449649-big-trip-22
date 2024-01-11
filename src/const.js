@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { availlableDestinations } from './mock/destination';
 
 const FILTER_TYPES = {
   EVERYTHING: 'everything',
@@ -27,68 +28,7 @@ const POINT_TYPES = {
   RESTARAUNT: 'Restaurant'
 };
 
-const DESTINATIONS = {
-  GENEVA: [
-    {
-      id: nanoid(),
-      name: 'Geneva',
-    }
-  ],
-  CHAMONIX: [
-    {
-      id: nanoid(),
-      name: 'Chamonix',
-    }
-  ],
-  AMSTERDAM: [
-    {
-      id: nanoid(),
-      name: 'Amsterdam',
-    }
-  ],
-  PARIS: [
-    {
-      id: nanoid(),
-      name: 'Paris',
-    }
-  ],
-  LONDON: [
-    {
-      id: nanoid(),
-      name: 'London',
-    }
-  ],
-  BERLIN: [
-    {
-      id: nanoid(),
-      name: 'Berlin',
-    }
-  ],
-  ROME: [
-    {
-      id: nanoid(),
-      name: 'Rome',
-    }
-  ],
-  BARCELONA: [
-    {
-      id: nanoid(),
-      name: 'Barcelona',
-    }
-  ],
-  MADRID: [
-    {
-      id: nanoid(),
-      name: 'Madrid',
-    }
-  ],
-  LISBON: [
-    {
-      id: nanoid(),
-      name: 'Lisbon',
-    }
-  ]
-};
+const AVAILLABLE_DESTINATIONS = availlableDestinations();
 
 const OFFERS_BY_TYPES = {
   TAXI: [
@@ -206,4 +146,4 @@ const OFFERS_BY_TYPES = {
   RESTAURANT: [],
 };
 
-export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, DESTINATIONS, OFFERS_BY_TYPES };
+export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS_BY_TYPES };
