@@ -105,6 +105,21 @@ const createPointSectionDestination = (point) => (
   </section>`
 );
 
+const createPhotosHtml = (point) => {
+
+  const photosHtml = point.destination.pictures.map((photo, index) => (
+    `<img class="event__photo" src="${photo.src}" alt="Event photo ${index + 1}">`
+  )).join('');
+
+  return (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${photosHtml}
+      </div>
+    </div>`
+  );
+};
+
 const createPointTypeItem = (eventTypes) => {
   const types = Object.values(eventTypes);
 
@@ -178,6 +193,7 @@ const createCancelButtonHtml = () =>
 const createEditViewTemplate = (point = {}) => {
   const hasOffers = point.offers !== null;
   const hasDestination = point.destination !== null;
+  const hasPictures = point.destination !== null && point.destination.pictures.length > 0;
 
   return (
     `<li class="trip-events__item">
@@ -208,9 +224,9 @@ const createEditViewTemplate = (point = {}) => {
           </button>
         </header>
         <section class="event__details">
-            ${hasOffers ? createPointSectionOffers(point) : ''}
-            ${hasDestination ? createPointSectionDestination(point) : ''}
-          </section>
+          ${hasOffers ? createPointSectionOffers(point) : ''}
+          ${hasDestination ? createPointSectionDestination(point) : ''}
+          ${hasPictures ? createPhotosHtml(point) : ''}
         </section>
       </form>
     </li>`
