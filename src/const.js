@@ -1,5 +1,5 @@
-import { nanoid } from 'nanoid';
 import { availlableDestinations } from './mock/destination';
+import { generateOffersByTypes } from './mock/offer';
 
 const FILTER_TYPES = {
   EVERYTHING: 'everything',
@@ -16,134 +16,20 @@ const SORT_TYPES = {
 };
 
 const POINT_TYPES = {
-  TAXI: 'Taxi',
-  BUS: 'Bus',
-  TRAIN: 'Train',
-  SHIP: 'Ship',
-  TRANSPORT: 'Transport',
-  DRIVE: 'Drive',
-  FLIGHT: 'Flight',
-  CHECKIN: 'Check-in',
-  SIGHTSEEING: 'Sightseeing',
-  RESTARAUNT: 'Restaurant'
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  TRANSPORT: 'transport',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECKIN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTARAUNT: 'restaurant'
 };
 
 const AVAILLABLE_DESTINATIONS = availlableDestinations();
 
-const OFFERS_BY_TYPES = {
-  TAXI: [
-    {
-      id: nanoid(),
-      title: 'Upgrade to a business class',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Choose the radio station',
-      price: 60,
-      isSelected: true,
-    }
-  ],
-  BUS: [
-    {
-      id: nanoid(),
-      title: 'Choose seats',
-      price: 120,
-      isSelected: true,
-    }
-  ],
-  TRAIN: [
-    {
-      id: nanoid(),
-      title: 'Add meal',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Switch to comfort',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Add luggage',
-      price: 60,
-      isSelected: true,
-    }
-  ],
-  SHIP: [
-    {
-      id: nanoid(),
-      title: 'Upgrade to a business class',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Switch to comfort',
-      price: 60,
-      isSelected: true,
-    }
-  ],
-  TRANSPORT: [
-    {
-      id: nanoid(),
-      title: 'Upgrade to a business class',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Choose the radio station',
-      price: 60,
-      isSelected: true,
-    }
-  ],
-  DRIVE: [],
-  FLIGHT: [
-    {
-      id: nanoid(),
-      title: 'Upgrade to a business class',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Switch to comfort',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Choose seats',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Add luggage',
-      price: 120,
-      isSelected: true,
-    },
-    {
-      id: nanoid(),
-      title: 'Travel by train',
-      price: 60,
-      isSelected: true,
-    }
-  ],
-  CHECKIN: [
-    {
-      id: nanoid(),
-      title: 'Upgrade to a business class',
-      price: 120,
-      isSelected: true,
-    }
-  ],
-  SIGHTSEEING: [],
-  RESTAURANT: [],
-};
+const OFFERS_BY_TYPES = generateOffersByTypes();
 
 export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS_BY_TYPES };

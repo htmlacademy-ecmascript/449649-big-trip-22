@@ -1,34 +1,138 @@
-import { POINT_TYPES, OFFERS_BY_TYPES } from '../const.js';
+import { POINT_TYPES } from '../const.js';
+import { nanoid } from 'nanoid';
 
 const generateOffers = (type) => {
   let offers = [];
   switch (type) {
     case POINT_TYPES.TAXI:
-      offers = OFFERS_BY_TYPES.TAXI;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Upgrade to a business class',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Choose the radio station',
+          price: 60,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.BUS:
-      offers = OFFERS_BY_TYPES.BUS;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Choose seats',
+          price: 120,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.TRAIN:
-      offers = OFFERS_BY_TYPES.TRAIN;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Add meal',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Switch to comfort',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Add luggage',
+          price: 60,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.SHIP:
-      offers = OFFERS_BY_TYPES.SHIP;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Upgrade to a business class',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Switch to comfort',
+          price: 60,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.DRIVE:
-      offers = OFFERS_BY_TYPES.DRIVE;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Upgrade to a business class',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Choose the radio station',
+          price: 60,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.FLIGHT:
-      offers = OFFERS_BY_TYPES.FLIGHT;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Upgrade to a business class',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Switch to comfort',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Choose seats',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Add luggage',
+          price: 120,
+          isSelected: true,
+        },
+        {
+          id: nanoid(),
+          title: 'Travel by train',
+          price: 60,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.CHECKIN:
-      offers = OFFERS_BY_TYPES.CHECKIN;
+      offers = [
+        {
+          id: nanoid(),
+          title: 'Upgrade to a business class',
+          price: 120,
+          isSelected: true,
+        }
+      ];
       break;
     case POINT_TYPES.SIGHTSEEING:
-      offers = OFFERS_BY_TYPES.SIGHTSEEING;
+      offers = [];
       break;
     case POINT_TYPES.RESTARAUNT:
-      offers = OFFERS_BY_TYPES.RESTAURANT;
+      offers = [];
       break;
     default:
       offers = [];
@@ -37,4 +141,13 @@ const generateOffers = (type) => {
   return offers;
 };
 
-export { generateOffers };
+const generateOffersByTypes = () => {
+  const offersByTypes = {};
+  Object.values(POINT_TYPES).forEach((type) => {
+    offersByTypes[type] = generateOffers(type);
+  });
+
+  return offersByTypes;
+};
+
+export { generateOffers, generateOffersByTypes };

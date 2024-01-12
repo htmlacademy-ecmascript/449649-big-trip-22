@@ -1,11 +1,12 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDate, formatTime, getTimeDiff } from '../utilities.js';
 import dayjs from 'dayjs';
+import { OFFERS_BY_TYPES } from '../const.js';
 
 const createOffer = (point = {}) => {
-  const offers = point.offers;
+  const availableOffers = OFFERS_BY_TYPES[point.type] || [];
 
-  return offers.map((offer) =>
+  return availableOffers.map((offer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -24,7 +25,7 @@ const createFavoriteIcon = (isFavorite = false) => (
 
 const createPointViewTemplate = (point) => {
   const { dateFrom, dateTo, destination } = point;
-  const hasOffers = point.offers.length > 0;
+  const hasOffers = point.offers !== null;
   const month = formatDate(dateFrom, 'MMM DD');
   const startTime = formatTime(dateFrom);
   const endTime = formatTime(dateTo);

@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
-import { POINT_TYPES, AVAILLABLE_DESTINATIONS } from '../const.js';
+import { POINT_TYPES, OFFERS_BY_TYPES, AVAILLABLE_DESTINATIONS } from '../const.js';
 
 const BLANK_POINT = {
   type: '',
@@ -41,10 +41,11 @@ const createOfferName = (offer = {}) => {
 };
 
 const createPointOfferSelector = (point = {}) => {
-  const { offers } = point;
-  return offers.map((offer) =>
+  const availableOffers = OFFERS_BY_TYPES[point.type] || [];
+
+  return availableOffers.map((offer) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${offer.isSelected ? 'checked ' : ''}>
+      <input class="event__offer-checkbox visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${offer.isSelected ? 'checked ' : ''}>
       <label class="event__offer-label" for="event-offer-${createOfferName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -71,7 +72,7 @@ const createDestinationFieldHtml = (point) => {
 
       return optionsList + destinationHtml;
     } else {
-      return optionsList; // Skip if pictures property is not an array
+      return optionsList;
     }
   }, '');
 
@@ -175,7 +176,7 @@ const createCancelButtonHtml = () =>
 `;
 
 const createEditViewTemplate = (point = {}) => {
-  const hasOffers = point.offers !== null && point.offers.length > 0;
+  const hasOffers = point.offers !== null;
   const hasDestination = point.destination !== null;
 
   return (
@@ -197,7 +198,7 @@ const createEditViewTemplate = (point = {}) => {
             </div>
           </div>
 
-          ${createDestinationFieldHtml(point)}
+          ${hasDestination ? createDestinationFieldHtml(point) : ''}
           ${createScheduleFieldHtml(point)}
           ${createPriceFieldHtml(point)}
           ${createSubmitButtonHtml()}
@@ -253,7 +254,7 @@ export default class EditView extends AbstractStatefulView {
   static parsePointToState(point) {
     return {...point,
       type: point.type,
-      hasOffers: point.offers.length > 0,
+      hasOffers: point.offers !== null,
       offers: point.offers,
       hasDestination: point.destination !== null && point.destination.description.length > 0,
       destination: point.destination,
@@ -271,8 +272,14 @@ export default class EditView extends AbstractStatefulView {
 
   #typeSelectClickHandler = (evt) => {
     evt.preventDefault();
+
+    if (evt.target.value === this._state.type) {
+      return;
+    }
+
     this.updateElement({
-      type: evt.target.value
+      type: evt.target.value,
+      offers: OFFERS_BY_TYPES[evt.target.value],
     });
   };
 
