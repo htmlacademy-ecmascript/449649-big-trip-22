@@ -1,18 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDate, formatTime, getTimeDiff } from '../utilities.js';
 import dayjs from 'dayjs';
-import { OFFERS_BY_TYPES } from '../const.js';
-
-const createOffer = (point = {}) => {
-  const availableOffers = OFFERS_BY_TYPES[point.type] || [];
-
-  return availableOffers.map((offer) =>
-    `<li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </li>`).join('');
-};
 
 const createFavoriteIcon = (isFavorite = false) => (
   `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
@@ -23,9 +11,27 @@ const createFavoriteIcon = (isFavorite = false) => (
   </button>`
 );
 
-const createPointViewTemplate = (point) => {
-  const { dateFrom, dateTo, destination } = point;
-  const hasOffers = point.offers !== null;
+const createOffersTemplate = (offers) => {
+  if (!offers) {
+    return '';
+  }
+
+  return (`
+    <ul class="event__selected-offers">
+      ${offers.map((offer) => `
+        <li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span><br>
+            +€&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+      </li>`).join('')}
+    </ul>
+  `);
+};
+
+const createPointViewTemplate = ({point, pointDestination, pointOffers}) => {
+  const { dateFrom, dateTo, basePrice, type, isFavorite } = point;
+  const name = pointDestination ? pointDestination.name : '';
+  const offersTemplate = createOffersTemplate(pointOffers);
   const month = formatDate(dateFrom, 'MMM DD');
   const startTime = formatTime(dateFrom);
   const endTime = formatTime(dateTo);
@@ -36,9 +42,9 @@ const createPointViewTemplate = (point) => {
       <div class="event">
         <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${month}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${point.type} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(dateFrom).format('YYYY-MM-DDTHH:mm')}">${startTime}</time>
@@ -48,13 +54,11 @@ const createPointViewTemplate = (point) => {
           <p class="event__duration">${diff}M</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${point.basePrice}</span>
+          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          ${hasOffers ? createOffer(point) : ''}
-        </ul>
-        ${createFavoriteIcon(point.isFavorite)}
+        ${pointOffers !== null ? offersTemplate : ''}
+        ${createFavoriteIcon(isFavorite)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -65,12 +69,16 @@ const createPointViewTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #pointDestination = null;
+  #pointOffers = null;
   #handleOpenClick = null;
   #handleFavoriteClick = null;
 
-  constructor({ point, onOpenClick, onFavoriteClick }) {
+  constructor({ point, pointDestination, pointOffers, onOpenClick, onFavoriteClick }) {
     super();
     this.#point = point;
+    this.#pointDestination = pointDestination;
+    this.#pointOffers = pointOffers;
     this.#handleOpenClick = onOpenClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
@@ -79,7 +87,11 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointViewTemplate(this.#point);
+    return createPointViewTemplate({
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffers: this.#pointOffers
+    });
   }
 
   #openClickHandler = (evt) => {

@@ -23,4 +23,11 @@ const sortPointsByTime = (eventA, eventB) => {
   return durationB - durationA;
 };
 
-export { formatDate, formatTime, getTimeDiff, isEscapeKey, updateItem, sortPointsByPrice, sortPointsByTime, filter };
+const sortPointsByDay = (pointA, pointB) => {
+  const dateA = dayjs(pointA.dateFrom).valueOf();
+  const dateB = dayjs(pointB.dateFrom).valueOf();
+
+  return dateA - dateB;
+};
+
+export { formatDate, formatTime, getTimeDiff, isEscapeKey, updateItem, sortPointsByPrice, sortPointsByTime, sortPointsByDay, filter };

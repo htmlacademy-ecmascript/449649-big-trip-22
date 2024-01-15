@@ -1,5 +1,5 @@
 import { availlableDestinations } from './mock/destination';
-import { generateOffersByTypes } from './mock/offer';
+import { generateOffers } from './mock/offer';
 
 const FILTER_TYPES = {
   EVERYTHING: 'everything',
@@ -28,8 +28,22 @@ const POINT_TYPES = {
   RESTARAUNT: 'restaurant'
 };
 
+const TYPES_POINTS = [
+  'Taxi',
+  'Bus',
+  'Train',
+  'Ship',
+  'Drive',
+  'Flight',
+  'Check-in',
+  'Sightseeing',
+  'Restaurant'
+];
+
+const DEFAULT_POINT_TYPE = POINT_TYPES.FLIGHT;
+
 const AVAILLABLE_DESTINATIONS = availlableDestinations();
 
-const OFFERS_BY_TYPES = generateOffersByTypes();
+const OFFERS = generateOffers();
 
-export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS_BY_TYPES };
+export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS };
