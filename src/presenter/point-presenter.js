@@ -14,11 +14,19 @@ export default class PointPresenter {
   #handleModeChange = null;
   #pointViewComponent = null;
   #pointEditComponent = null;
+  #destinationsModel = null;
+  #offersModel = null;
+  #allOffers = null;
+  #allDestinations = null;
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, onDataChange, onModeChange}) {
+  constructor({pointListContainer, destinationsModel, offersModel, onDataChange, onModeChange}) {
     this.#pointListContainer = pointListContainer;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#allOffers = offersModel.offers;
+    this.#allDestinations = destinationsModel.destinations;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -31,13 +39,20 @@ export default class PointPresenter {
 
     this.#pointViewComponent = new PointView({
       point: this.#point,
+      pointDestination: point.destination,
+      pointOffers: point.offers,
       onOpenClick: this.#handleOpenClick,
+      onCancelClick: this.#handleCancelClick,
       onFavoriteClick: this.#handleFavoriteClick
     });
 
     this.#pointEditComponent = new EditView({
       point: this.#point,
-      onCloseClick: this.#handleCloseClick
+      allOffers: this.#allOffers,
+      allDestinations: this.#allDestinations,
+      onCloseClick: this.#handleCloseClick,
+      onCancelClick: this.#handleCancelClick,
+      onFormSubmit: this.#handleFormSubmit
     });
 
     if (prevPointViewComponent === null || prevPointEditComponent === null) {
@@ -64,6 +79,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#changePointToReadView();
     }
   }
@@ -94,6 +110,16 @@ export default class PointPresenter {
   };
 
   #handleCloseClick = () => {
+    this.#pointEditComponent.reset(this.#point);
+    this.#changePointToReadView();
+  };
+
+  #handleCancelClick = () => {
+    this.#handleDataChange(this.#point);
+  };
+
+  #handleFormSubmit = () => {
+    this.#handleDataChange(this.#point);
     this.#changePointToReadView();
   };
 

@@ -1,16 +1,178 @@
-import { getRandomInteger } from './util.js';
+import { POINT_TYPES, OFFERS } from '../const.js';
+import { nanoid } from 'nanoid';
 
-const OFFER_TYPES = ['Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train'];
+const generateOffers = () => {
+  const offers = [];
 
-const generateOffer = () => {
-  const prices = [5, 15, 30, 40, 50, 80, 100];
+  const pointTypesOrder = [
+    POINT_TYPES.TAXI,
+    POINT_TYPES.BUS,
+    POINT_TYPES.TRAIN,
+    POINT_TYPES.SHIP,
+    POINT_TYPES.DRIVE,
+    POINT_TYPES.FLIGHT,
+    POINT_TYPES.CHECKIN,
+    POINT_TYPES.SIGHTSEEING,
+    POINT_TYPES.RESTARAUNT
+  ];
 
-  return {
-    title: OFFER_TYPES[getRandomInteger(0, OFFER_TYPES.length - 1)],
-    price: prices[getRandomInteger(0, prices.length - 1)]
-  };
+  pointTypesOrder.forEach((type) => {
+    let typeOffers = [];
+
+    switch (type) {
+      case POINT_TYPES.TAXI:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Upgrade to a business class',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Choose the radio station',
+            price: 60
+          }
+        ];
+        break;
+      case POINT_TYPES.BUS:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Choose seats',
+            price: 120
+          }
+        ];
+        break;
+      case POINT_TYPES.TRAIN:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Add meal',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Switch to comfort',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Add luggage',
+            price: 60
+          }
+        ];
+        break;
+      case POINT_TYPES.SHIP:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Upgrade to a business class',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Switch to comfort',
+            price: 60
+          }
+        ];
+        break;
+      case POINT_TYPES.DRIVE:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Upgrade to a business class',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Choose the radio station',
+            price: 60
+          }
+        ];
+        break;
+      case POINT_TYPES.FLIGHT:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Upgrade to a business class',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Switch to comfort',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Choose seats',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Add luggage',
+            price: 120
+          },
+          {
+            id: nanoid(),
+            title: 'Travel by train',
+            price: 60
+          }
+        ];
+        break;
+      case POINT_TYPES.CHECKIN:
+        typeOffers = [
+          {
+            id: nanoid(),
+            title: 'Upgrade to a business class',
+            price: 120
+          }
+        ];
+        break;
+      case POINT_TYPES.SIGHTSEEING:
+        typeOffers = [];
+        break;
+      case POINT_TYPES.RESTARAUNT:
+        typeOffers = [];
+        break;
+      default:
+        typeOffers = [];
+    }
+
+    if (typeOffers.length > 0) {
+      const typeStructure = {
+        type: type,
+        offers: typeOffers.map((offer) => ({
+          id: offer.id,
+          title: offer.title,
+          price: offer.price,
+          isSelected: offer.isSelected
+        })),
+      };
+
+      offers.push(typeStructure);
+    }
+  });
+
+  return offers;
 };
 
-const generateOffers = () => Array.from({ length: getRandomInteger(0, 5) }, generateOffer);
+const generateOffersByTypes = () => {
+  const offersByTypes = {};
+  Object.values(POINT_TYPES).forEach((type) => {
+    offersByTypes[type] = generateOffers(type);
+  });
 
-export { generateOffers };
+  return offersByTypes;
+};
+
+const getOffersByType = (type) => {
+  const typeOffers = OFFERS.find((offerType) => offerType.type === type);
+
+  if (typeOffers) {
+    return typeOffers.offers;
+  } else {
+    return [];
+  }
+};
+
+export { generateOffers, generateOffersByTypes, getOffersByType };
