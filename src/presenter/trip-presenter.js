@@ -6,7 +6,7 @@ import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
 import { filter } from '../utilities.js';
 import { sortPointsByPrice, sortPointsByTime, sortPointsByDay } from '../utilities.js';
-import { SortType, UserAction, UpdateType } from '../const.js';
+import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
 
 
 export default class TripPresenter {
@@ -19,11 +19,12 @@ export default class TripPresenter {
   #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
   #sortComponent = null;
-  #noPointViewComponent = new NoPointView();
+  #noPointComponent = null;
 
   #points = [];
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   constructor({ tripContainer, pointsModel, destinationsModel, offersModel, filterModel }) {
     this.#tripContainer = tripContainer;
@@ -38,9 +39,9 @@ export default class TripPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredTasks = filter[filterType](points);
+    const filteredTasks = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
         return filteredTasks.sort(sortPointsByTime);
@@ -67,8 +68,8 @@ export default class TripPresenter {
       this.#currentSortType = SortType.DAY;
     }
 
-    if (this.#noPointViewComponent) {
-      remove(this.#noPointViewComponent);
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
     }
   }
 
@@ -84,7 +85,10 @@ export default class TripPresenter {
   }
 
   #renderNoPoints() {
-    render(this.#noPointViewComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
+    this.#noPointComponent = new NoPointView({
+      filterType: this.#filterType
+    });
+    render(this.#noPointComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderTripView() {
