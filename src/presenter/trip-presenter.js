@@ -4,6 +4,7 @@ import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
+import { filter } from '../utilities.js';
 import { sortPointsByPrice, sortPointsByTime, sortPointsByDay } from '../utilities.js';
 import { SortType, UserAction, UpdateType } from '../const.js';
 
@@ -13,6 +14,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
 
   #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
@@ -23,27 +25,32 @@ export default class TripPresenter {
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
 
-  constructor({ tripContainer, pointsModel, destinationsModel, offersModel }) {
+  constructor({ tripContainer, pointsModel, destinationsModel, offersModel, filterModel }) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
     this.#points = [...this.#pointsModel.points];
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredTasks = filter[filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#points.sort(sortPointsByTime)];
+        return filteredTasks.sort(sortPointsByTime);
       case SortType.PRICE:
-        return [...this.#points.sort(sortPointsByPrice)];
+        return filteredTasks.sort(sortPointsByPrice);
       case SortType.DAY:
-        return [...this.#points.sort(sortPointsByDay)];
+        return filteredTasks.sort(sortPointsByDay);
     }
 
-    return this.#pointsModel.points;
+    return filteredTasks;
   }
 
   init() {
