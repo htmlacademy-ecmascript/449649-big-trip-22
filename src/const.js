@@ -1,21 +1,34 @@
 import { availlableDestinations } from './mock/destination';
 import { generateOffers } from './mock/offer';
 
-const FILTER_TYPES = {
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past'
 };
 
-const SORT_TYPES = {
+const SortType = {
   DAY: 'day',
+  EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  DISABLED: 'disabled'
+  OFFERS: 'offers'
 };
 
-const POINT_TYPES = {
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const PointType = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRAIN: 'train',
@@ -40,10 +53,10 @@ const TYPES_POINTS = [
   'Restaurant'
 ];
 
-const DEFAULT_POINT_TYPE = POINT_TYPES.FLIGHT;
+const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
 const AVAILLABLE_DESTINATIONS = availlableDestinations();
 
 const OFFERS = generateOffers();
 
-export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS };
+export { FilterType, SortType, PointType, UserAction, UpdateType, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS };

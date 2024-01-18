@@ -2,6 +2,7 @@ import { remove, render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utilities.js';
 import PointView from '../view/point-view.js';
 import EditView from '../view/edit-view.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -115,15 +116,27 @@ export default class PointPresenter {
   };
 
   #handleCancelClick = () => {
-    this.#handleDataChange(this.#point);
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
   };
 
   #handleFormSubmit = () => {
-    this.#handleDataChange(this.#point);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
     this.#changePointToReadView();
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 }

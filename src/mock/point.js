@@ -4,7 +4,7 @@ import { getRandomInteger } from './util.js';
 import { getOffersByType } from './offer.js';
 import { AVAILLABLE_DESTINATIONS } from '../const.js';
 
-const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const PointType = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const generateDate = () => {
   const maxMinutesGap = getRandomInteger(0, 60 * 24);
@@ -20,7 +20,7 @@ const generateDate = () => {
 
 const generatePoint = () => {
   const { dateFrom, dateTo } = generateDate();
-  const type = POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)];
+  const type = PointType[getRandomInteger(0, PointType.length - 1)];
   const offers = getOffersByType(type.toLowerCase());
   return {
     basePrice: getRandomInteger(1, 50) * 10,

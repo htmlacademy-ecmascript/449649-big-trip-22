@@ -6,20 +6,17 @@ import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
 import { RenderPosition, render } from './framework/render.js';
 import { generateFilter } from './mock/filter.js';
-import { generatePoint } from './mock/point.js';
-import { AVAILLABLE_DESTINATIONS, OFFERS } from './const.js';
-import { getRandomInteger } from './mock/util.js';
-const POINTS_COUNT = getRandomInteger(0, 5);
+
 
 const tripMain = document.querySelector('.trip-main');
 const tripFilters = document.querySelector('.trip-controls__filters');
 const tripEvents = document.querySelector('.trip-events');
-const pointsModel = new PointsModel(Array.from({ length: POINTS_COUNT }, generatePoint));
+const pointsModel = new PointsModel();
 const tripPresenter = new TripPresenter({
   tripContainer: tripEvents,
   pointsModel: pointsModel,
-  destinationsModel: new DestinationsModel(AVAILLABLE_DESTINATIONS),
-  offersModel: new OffersModel(OFFERS),
+  destinationsModel: new DestinationsModel(),
+  offersModel: new OffersModel()
 });
 const filters = generateFilter(pointsModel.points);
 

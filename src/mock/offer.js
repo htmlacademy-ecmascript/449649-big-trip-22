@@ -1,26 +1,26 @@
-import { POINT_TYPES, OFFERS } from '../const.js';
+import { PointType, OFFERS } from '../const.js';
 import { nanoid } from 'nanoid';
 
 const generateOffers = () => {
   const offers = [];
 
   const pointTypesOrder = [
-    POINT_TYPES.TAXI,
-    POINT_TYPES.BUS,
-    POINT_TYPES.TRAIN,
-    POINT_TYPES.SHIP,
-    POINT_TYPES.DRIVE,
-    POINT_TYPES.FLIGHT,
-    POINT_TYPES.CHECKIN,
-    POINT_TYPES.SIGHTSEEING,
-    POINT_TYPES.RESTARAUNT
+    PointType.TAXI,
+    PointType.BUS,
+    PointType.TRAIN,
+    PointType.SHIP,
+    PointType.DRIVE,
+    PointType.FLIGHT,
+    PointType.CHECKIN,
+    PointType.SIGHTSEEING,
+    PointType.RESTARAUNT
   ];
 
   pointTypesOrder.forEach((type) => {
     let typeOffers = [];
 
     switch (type) {
-      case POINT_TYPES.TAXI:
+      case PointType.TAXI:
         typeOffers = [
           {
             id: nanoid(),
@@ -34,7 +34,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.BUS:
+      case PointType.BUS:
         typeOffers = [
           {
             id: nanoid(),
@@ -43,7 +43,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.TRAIN:
+      case PointType.TRAIN:
         typeOffers = [
           {
             id: nanoid(),
@@ -62,7 +62,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.SHIP:
+      case PointType.SHIP:
         typeOffers = [
           {
             id: nanoid(),
@@ -76,7 +76,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.DRIVE:
+      case PointType.DRIVE:
         typeOffers = [
           {
             id: nanoid(),
@@ -90,7 +90,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.FLIGHT:
+      case PointType.FLIGHT:
         typeOffers = [
           {
             id: nanoid(),
@@ -119,7 +119,7 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.CHECKIN:
+      case PointType.CHECKIN:
         typeOffers = [
           {
             id: nanoid(),
@@ -128,10 +128,10 @@ const generateOffers = () => {
           }
         ];
         break;
-      case POINT_TYPES.SIGHTSEEING:
+      case PointType.SIGHTSEEING:
         typeOffers = [];
         break;
-      case POINT_TYPES.RESTARAUNT:
+      case PointType.RESTARAUNT:
         typeOffers = [];
         break;
       default:
@@ -158,7 +158,7 @@ const generateOffers = () => {
 
 const generateOffersByTypes = () => {
   const offersByTypes = {};
-  Object.values(POINT_TYPES).forEach((type) => {
+  Object.values(PointType).forEach((type) => {
     offersByTypes[type] = generateOffers(type);
   });
 

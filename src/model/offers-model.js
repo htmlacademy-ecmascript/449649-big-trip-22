@@ -1,8 +1,9 @@
+import { OFFERS } from '../const.js';
 export default class OffersModel {
   #offers = null;
 
-  constructor(offers) {
-    this.#offers = offers;
+  constructor() {
+    this.#offers = OFFERS;
   }
 
   get offers() {

@@ -1,8 +1,9 @@
+import { AVAILLABLE_DESTINATIONS } from '../const.js';
 export default class DestinationsModel {
   #destinations = null;
 
-  constructor(destinations) {
-    this.#destinations = destinations;
+  constructor() {
+    this.#destinations = AVAILLABLE_DESTINATIONS;
   }
 
   get destinations() {
