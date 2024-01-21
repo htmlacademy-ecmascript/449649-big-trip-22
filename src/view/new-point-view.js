@@ -2,7 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
-import { POINT_TYPES } from '../const.js';
+import { POINT_TYPES, DEFAULT_POINT_TYPE } from '../const.js';
 
 const POINT_TEMPLATE = {
   price: 0,
@@ -11,7 +11,7 @@ const POINT_TEMPLATE = {
   destination: '',
   isFavorite: false,
   offers: [],
-  type: 'flight'
+  type: DEFAULT_POINT_TYPE
 };
 
 const createPointTypesTemplate = (type) =>(
