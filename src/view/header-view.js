@@ -4,7 +4,7 @@ import { formatDate } from '../utilities';
 const MAX_DESTINATIONS_TO_RENDER = 3;
 
 const createHeaderTemplate = ({totalPrice, destinationNames, points}) => {
-  const destinations = Array.from(new Set(destinationNames));
+  const destinations = Array.from(destinationNames);
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
