@@ -1,10 +1,8 @@
-import { AVAILLABLE_DESTINATIONS } from '../const.js';
-export default class DestinationsModel {
-  #destinations = null;
+import { getAllDestinations } from '../mock/destination.js';
+import Observable from '../framework/observable.js';
 
-  constructor() {
-    this.#destinations = AVAILLABLE_DESTINATIONS;
-  }
+export default class DestinationsModel extends Observable {
+  #destinations = getAllDestinations();
 
   get destinations() {
     return this.#destinations;

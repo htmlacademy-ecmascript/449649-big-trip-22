@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import { getRandomInteger } from './util.js';
-import { getOffersByType } from './offer.js';
-import { AVAILLABLE_DESTINATIONS } from '../const.js';
+import { getOffersIds } from './offer.js';
+import { getRandomDestinationId } from './destination.js';
 
 const PointType = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
@@ -21,15 +21,14 @@ const generateDate = () => {
 const generatePoint = () => {
   const { dateFrom, dateTo } = generateDate();
   const type = PointType[getRandomInteger(0, PointType.length - 1)];
-  const offers = getOffersByType(type.toLowerCase());
   return {
-    basePrice: getRandomInteger(1, 50) * 10,
+    basePrice: getRandomInteger(1, 50) * 100,
     dateFrom,
     dateTo,
-    destination: AVAILLABLE_DESTINATIONS[getRandomInteger(0, AVAILLABLE_DESTINATIONS.length - 1)],
+    destination: getRandomDestinationId(),
     id: nanoid(),
     type: type.toLowerCase(),
-    offers: offers,
+    offers: getOffersIds(type),
     isFavorite: Boolean(getRandomInteger(0, 1))
   };
 };

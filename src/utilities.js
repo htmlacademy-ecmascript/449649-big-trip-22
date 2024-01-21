@@ -1,17 +1,10 @@
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration.js';
-import { FilterType } from './const.js';
+import { FilterType, SortType } from './const.js';
 
 dayjs.extend(durationPlugin);
 
-const filter = {
-  [FilterType.EVERYTHING]: (points) => points,
-  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
-  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
-  [FilterType.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
-};
-
-const isEscapeKey = (evt) => evt.key === 'Escape';
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const formatDate = (date) => date ? dayjs(date).format('MMM DD') : '';
 const formatTime = (date) => date ? dayjs(date).format('HH:mm') : '';
 const getTimeDiff = (dateFrom, dateTo) => dayjs(dateTo).diff(dateFrom, 'minute');
@@ -29,4 +22,17 @@ const sortPointsByDay = (pointA, pointB) => {
   return dateA - dateB;
 };
 
-export { formatDate, formatTime, getTimeDiff, isEscapeKey, sortPointsByPrice, sortPointsByTime, sortPointsByDay, filter };
+const filter = {
+  [FilterType.EVERYTHING]: (points) => points,
+  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
+  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
+  [FilterType.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
+};
+
+const sort = {
+  [SortType.DAY]: (points) => points.sort(sortPointsByDay),
+  [SortType.PRICE]: (points) => points.sort(sortPointsByPrice),
+  [SortType.TIME]: (points) => points.sort(sortPointsByTime)
+};
+
+export { formatDate, formatTime, getTimeDiff, isEscapeKey, sortPointsByDay, sortPointsByPrice, sortPointsByTime, filter, sort };

@@ -1,4 +1,4 @@
-import { availlableDestinations } from './mock/destination';
+import { getAllDestinations } from './mock/destination';
 import { generateOffers } from './mock/offer';
 
 const FilterType = {
@@ -28,6 +28,13 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const NoPointsTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now'
+};
+
 const PointType = {
   TAXI: 'taxi',
   BUS: 'bus',
@@ -40,6 +47,8 @@ const PointType = {
   SIGHTSEEING: 'sightseeing',
   RESTARAUNT: 'restaurant'
 };
+
+const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const TYPES_POINTS = [
   'Taxi',
@@ -55,8 +64,8 @@ const TYPES_POINTS = [
 
 const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
-const AVAILLABLE_DESTINATIONS = availlableDestinations();
+const AVAILLABLE_DESTINATIONS = getAllDestinations();
 
 const OFFERS = generateOffers();
 
-export { FilterType, SortType, PointType, UserAction, UpdateType, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS };
+export { FilterType, SortType, NoPointsTextType, PointType, UserAction, UpdateType, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS, POINT_TYPES };

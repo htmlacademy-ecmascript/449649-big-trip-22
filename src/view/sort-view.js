@@ -1,25 +1,26 @@
 import AbstractView from '../framework/view/abstract-view';
 import { SortType } from '../const';
 
-const sortValues = [SortType.DAY, SortType.EVENT, SortType.TIME, SortType.PRICE, SortType.OFFERS];
+const createSortItemTemplate = (sortType, checkedType) => (
+  `<div class="trip-sort__item  trip-sort__item--${sortType}">
+    <input
+      id="sort-${sortType}"
+      class="trip-sort__input  visually-hidden"
+      type="radio"
+      name="trip-sort"
+      value="sort-${sortType}"
+      data-sort-type="${sortType}"
+      ${sortType === checkedType ? 'checked' : ''}
+      ${sortType === SortType.EVENT || sortType === SortType.OFFERS ? 'disabled' : ''}>
+    <label class="trip-sort__btn" for="sort-${sortType}">${sortType === SortType.OFFERS ? 'Offers' : sortType}</label>
+  </div>`
+);
 
-function createSortTemplate(currentSortType = SortType.DAY) {
-  return (
-    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${sortValues.map((value) => {
-      const isDisabled = value === SortType.OFFERS || value === SortType.EVENT;
-      return (`
-        <div class="trip-sort__item  trip-sort__item--${value}">
-                <input id="sort-${value}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort"
-                value="sort-${value}" data-sort-type="${value}" ${isDisabled ? 'disabled' : ''}${currentSortType === value ? 'checked' : ''}>
-                <label class="trip-sort__btn" for="sort-${value}">${value}</label>
-        </div>`
-      );
-    }).join('')
-    }
-    </form>`
-  );
-}
+const createSortTemplate = (checkedType) => (
+  `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+    ${Object.values(SortType).map((item) => createSortItemTemplate(item, checkedType)).join('')}
+  </form>`
+);
 
 export default class SortView extends AbstractView {
   #currentSortType = null;
@@ -38,10 +39,6 @@ export default class SortView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'LABEL') {
-      return;
-    }
-    evt.preventDefault();
-    this.#handleSortTypeChange(evt.target.dataset.sortType);
+    this.#handleSortTypeChange(evt);
   };
 }

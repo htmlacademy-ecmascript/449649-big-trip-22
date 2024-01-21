@@ -2,43 +2,29 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { DEFAULT_POINT_TYPE, TYPES_POINTS } from '../const.js';
+import { POINT_TYPES } from '../const.js';
 
-const BLANK_POINT = {
-  type: DEFAULT_POINT_TYPE,
-  dateFrom: dayjs().toDate(),
-  dateTo: dayjs().toDate(),
-  basePrice: 0,
-  offers: [],
-  destination: {
-    name: '',
-    description: '',
-    pictures: [],
-  },
-};
-
-const createOffersTemplate = ({ offersByType, point }) => (`
+const createOffersTemplate = (pointTypeOffers, offers) => (`
 <section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
   <div class="event__available-offers">
-  ${offersByType.map((offer) => {
-    const checked = point.offers.includes(offer.id) ? 'checked' : '';
-    return (
-      `<div class="event__offer-selector">
-        <input
-          class="event__offer-checkbox  visually-hidden"
-          id="event-offer-${offer.id}"
-          type="checkbox"
-          name="event-offer-${offer.id}"
-          data-offer-id=${offer.id} ${checked}
-        >
-        <label class="event__offer-label" for="event-offer-${offer.id}">
+  ${pointTypeOffers.offers.map((offer) => (
+    `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox  visually-hidden"
+        id="event-offer-${offer.title}-${offer.id}"
+        type="checkbox"
+        name="event-offer-${offer.title}"
+        data-id="${offer.id}"
+        ${offers.includes(offer.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${offer.title}-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
+        &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`);
-  }).join('')
+      </label>
+    </div>`
+  )
+  ).join('')
   }
   </div>
 </section>`);
@@ -82,8 +68,8 @@ const createPicturesTemplate = (pictures) => {
   );
 };
 
-const createDestinationTemplate = (destinationById) => {
-  const { description, pictures = [] } = destinationById;
+const createDestinationTemplate = (destination) => {
+  const { description, pictures = [] } = destination;
   return `
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">
@@ -108,7 +94,7 @@ const createPointTypeList = (type) => {
   <div class="event__type-list">
     <fieldset class="event__type-group">
       <legend class="visually-hidden">Event type</legend>
-      ${TYPES_POINTS.map((item) => createPointTypeItem(item)).join('')}
+      ${POINT_TYPES.map((item) => createPointTypeItem(item)).join('')}
     </fieldset>
   </div>`;
 };
@@ -150,13 +136,10 @@ const createFieldSchedule = (point) => {
   `);
 };
 
-const createFieldPrice = (point) => {
-  const { basePrice } = point;
-
-  return (`
-    <div class="event__field-group  event__field-group--price">
-      <label class="event__label" for="event-price-1">
-        <span class="visually-hidden">Price</span>
+const createFieldPrice = (price) => (`
+  <div class="event__field-group  event__field-group--price">
+    <label class="event__label" for="event-price-1">
+      <span class="visually-hidden">Price</span>
         €
       </label>
       <input
@@ -165,10 +148,9 @@ const createFieldPrice = (point) => {
         type="number"
         min="0"
         name="event-price"
-        value="${basePrice}">
+        value="${price}">
     </div>
   `);
-};
 
 const createButtonSubmit = (isDisabled, isSaving) =>
   `<button
@@ -176,21 +158,22 @@ const createButtonSubmit = (isDisabled, isSaving) =>
     type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}
   </button>`;
 
-const createButtonCancel = () =>
+const createButtonDelete = () =>
   `<button
       class="event__reset-btn"
       type="reset">
-        Cancel
+        Delete
     </button>`;
 
-const createEditViewTemplate = ({ state, allOffers, allDestinations }) => {
+const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const point = state;
-  const { type, destination } = point;
+  const {basePrice, destination, offers, type} = point;
+  const pointTypeOffers = allOffers.find((offer) => offer.type === type);
+  const destinationInfo = allDestinations.find((item) => item.id === destination);
+
   const offersByType = (allOffers?.find((item) => item.type === point.type) ?? {}).offers;
   const hasOffers = offersByType?.length > 0;
-  const destinationById = allDestinations.find((item) => item.id === destination.id);
-  const hasDestination = destinationById !== undefined;
-  const { name } = destinationById || {};
+  const hasDestination = destinationInfo !== undefined;
   const { isDisabled, isSaving } = state;
 
   return (
@@ -198,18 +181,18 @@ const createEditViewTemplate = ({ state, allOffers, allDestinations }) => {
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           ${createFieldType(type)}
-          ${createFieldDestination(type, name, allDestinations)}
+          ${createFieldDestination(type, destinationInfo.name, allDestinations)}
           ${createFieldSchedule(point)}
-          ${createFieldPrice(point)}
+          ${createFieldPrice(basePrice)}
           ${createButtonSubmit(isDisabled, isSaving)}
-          ${createButtonCancel()}
+          ${createButtonDelete()}
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
         <section class="event__details">
-          ${hasOffers ? createOffersTemplate({ offersByType, point }) : ''}
-          ${hasDestination ? createDestinationTemplate(destinationById) : ''}
+          ${hasOffers ? createOffersTemplate(pointTypeOffers, offers) : ''}
+          ${hasDestination ? createDestinationTemplate(destinationInfo) : ''}
         </section>
       </form>
     </li>`
@@ -220,29 +203,25 @@ export default class EditView extends AbstractStatefulView {
   #allOffers = null;
   #allDestinations = null;
   #handleCloseClick = null;
-  #handleCancelClick = null;
+  #handleDeleteClick = null;
   #handleFormSubmit = null;
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({ point = BLANK_POINT, allOffers, allDestinations, onCloseClick, onCancelClick, onFormSubmit }) {
+  constructor({ point, allOffers, allDestinations, onCloseClick, onDeleteClick, onFormSubmit }) {
     super();
-    this._state = EditView.parsePointToState(point);
+    this._setState(point);
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleCloseClick = onCloseClick;
-    this.#handleCancelClick = onCancelClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#handleFormSubmit = onFormSubmit;
 
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditViewTemplate({
-      state: this._state,
-      allOffers: this.#allOffers,
-      allDestinations: this.#allDestinations
-    });
+    return createEditViewTemplate(this._state, this.#allOffers, this.#allDestinations);
   }
 
   removeElement() {
@@ -261,7 +240,7 @@ export default class EditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
@@ -367,13 +346,13 @@ export default class EditView extends AbstractStatefulView {
     this.#handleCloseClick(EditView.parseStateToPoint(this._state));
   };
 
-  #cancelClickHandler = (evt) => {
+  #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleCancelClick(EditView.parseStateToPoint(this._state));
+    this.#handleDeleteClick(EditView.parseStateToPoint(this._state));
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(EditView.parseStateToPoint(this._state));
+    this.#handleFormSubmit(this._state);
   };
 }

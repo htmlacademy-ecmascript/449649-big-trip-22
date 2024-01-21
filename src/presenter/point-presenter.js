@@ -40,10 +40,10 @@ export default class PointPresenter {
 
     this.#pointViewComponent = new PointView({
       point: this.#point,
-      pointDestination: point.destination,
-      pointOffers: point.offers,
+      allDestinations: this.#allDestinations,
+      allOffers: this.#allOffers,
       onOpenClick: this.#handleOpenClick,
-      onCancelClick: this.#handleCancelClick,
+      onCancelClick: this.#handleCloseClick,
       onFavoriteClick: this.#handleFavoriteClick
     });
 
@@ -52,7 +52,7 @@ export default class PointPresenter {
       allOffers: this.#allOffers,
       allDestinations: this.#allDestinations,
       onCloseClick: this.#handleCloseClick,
-      onCancelClick: this.#handleCancelClick,
+      onDeleteClick: this.#handleDeleteClick,
       onFormSubmit: this.#handleFormSubmit
     });
 
@@ -115,7 +115,7 @@ export default class PointPresenter {
     this.#changePointToReadView();
   };
 
-  #handleCancelClick = () => {
+  #handleDeleteClick = () => {
     this.#handleDataChange(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
