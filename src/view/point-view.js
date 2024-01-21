@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDate, formatTime, getTimeDiff } from '../utilities.js';
 import dayjs from 'dayjs';
+import he from 'he';
 
 const createFavoriteIcon = (isFavorite = false) => (
   `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
@@ -28,7 +29,7 @@ const createPointViewTemplate = (point, allDestinations, allOffers) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${destinationInfo.name}</h3>
+        <h3 class="event__title">${type} ${he.encode(destinationInfo.name)}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(dateFrom).format('YYYY-MM-DDTHH:mm')}">${startTime}</time>

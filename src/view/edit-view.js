@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { POINT_TYPES } from '../const.js';
@@ -48,7 +49,7 @@ const createFieldDestination = (type, name, allDestinations) =>
         class="event__input  event__input--destination"
         id="event-destination-1" type="text"
         name="event-destination"
-        value="${name}"
+        value="${he.encode(name)}"
         list="destination-list-1"
       >
       ${createListTitlesTemplate(allDestinations)}
