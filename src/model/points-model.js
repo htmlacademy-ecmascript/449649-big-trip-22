@@ -5,7 +5,18 @@ import { getRandomInteger } from '../mock/util.js';
 const POINTS_COUNT = getRandomInteger(0, 7);
 
 export default class PointsModel extends Observable {
+  #pointsApiService = null;
   #points = Array.from({ length: POINTS_COUNT }, generatePoint);
+
+  constructor({ pointsApiService }) {
+    super();
+    this.#pointsApiService = pointsApiService;
+
+    this.#pointsApiService.points.then((points) => {
+      this.#points = points;
+      this._notify();
+    });
+  }
 
   get points() {
     return this.#points;
