@@ -1,3 +1,17 @@
+
+const MILLISECONDS_IN_HOUR = 3600000;
+const MILLISECONDS_IN_DAY = 86400000;
+
+const DateFormat = {
+  DATE_PICKER: 'd/m/y H:i',
+  DAY_MONTH: 'D MMM',
+  MONTH_DAY: 'MMM DD',
+  HOUR_MINUTES: 'HH:mm',
+  DAY_MONTH_YEAR: 'DD/MM/YY[&nbsp;]HH:mm',
+  MINUTES_WITH_POSTFIX: 'mm[M]',
+  HOUR_MINUTES_WITH_POSTFIX: 'HH[H] mm[M]',
+};
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -45,7 +59,39 @@ const PointType = {
   RESTARAUNT: 'restaurant'
 };
 
-const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const DATE_CONFIG = {
+  dateFormat: DateFormat.DATE_PICKER,
+  enableTime: true,
+  'time_24hr': true,
+  locale: { firstDayOfWeek: 1 },
+  allowInput: true
+};
+
+const DEFAULT_POINT = {
+  price: 0,
+  dateFrom: '',
+  dateTo: '',
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: PointType.FLIGHT
+};
+
+const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
-export { FilterType, SortType, NoPointsTextType, PointType, UserAction, UpdateType, DEFAULT_POINT_TYPE, POINT_TYPES };
+export {
+  MILLISECONDS_IN_DAY,
+  MILLISECONDS_IN_HOUR,
+  DateFormat,
+  FilterType,
+  SortType,
+  NoPointsTextType,
+  PointType,
+  UserAction,
+  UpdateType,
+  DEFAULT_POINT_TYPE,
+  POINT_TYPES,
+  DATE_CONFIG,
+  DEFAULT_POINT
+};

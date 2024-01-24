@@ -17,6 +17,10 @@ export default class HeaderPresenter {
     this.#pointsModel.addObserver(this.#handlePointsChange);
   }
 
+  init() {
+    this.#renderHeaderList();
+  }
+
   get points() {
     return this.#pointsModel.points;
   }
@@ -24,14 +28,6 @@ export default class HeaderPresenter {
   get destinations() {
     return this.#destinationsModel.destinations;
   }
-
-  init() {
-    this.#renderHeaderList();
-  }
-
-  #handlePointsChange = () => {
-    this.#renderHeaderList();
-  };
 
   #renderHeaderList() {
     if (this.#headerComponent) {
@@ -46,4 +42,8 @@ export default class HeaderPresenter {
     });
     render(this.#headerComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   }
+
+  #handlePointsChange = () => {
+    this.#renderHeaderList();
+  };
 }

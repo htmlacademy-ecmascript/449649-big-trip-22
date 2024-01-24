@@ -1,22 +1,19 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDate } from '../utilities';
+import { getMinData, getMaxData } from '../utilities';
 
 const MAX_DESTINATIONS_TO_RENDER = 3;
 
-const createHeaderTemplate = ({totalPrice, destinationNames, points}) => {
-  const destinations = Array.from(destinationNames);
-  return (
-    `<section class="trip-main__trip-info  trip-info">
-      <div class="trip-info__main">
-        <h1 class="trip-info__title">${destinations.length > MAX_DESTINATIONS_TO_RENDER ? `${destinations[0]} &mdash;...&mdash; ${destinations[destinations.length - 1]}` : destinations.join(' &mdash; ')}</h1>
-        <p class="trip-info__dates">${formatDate(points[0].dateFrom)}&nbsp;&mdash;&nbsp;${formatDate(points[points.length - 1].dateTo)}</p>
-      </div>
-      <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
-      </p>
-    </section>`
-  );
-};
+const createHeaderTemplate = ({totalPrice, destinationNames, points}) => (
+  `<section class="trip-main__trip-info  trip-info">
+    <div class="trip-info__main">
+      <h1 class="trip-info__title">${destinationNames.length > MAX_DESTINATIONS_TO_RENDER ? `${destinationNames[0]} &mdash;...&mdash; ${destinationNames[destinationNames.length - 1]}` : destinationNames.join(' &mdash; ')}</h1>
+      <p class="trip-info__dates">${getMinData(points)}&nbsp;&mdash;&nbsp;${getMaxData(points)}</p>
+    </div>
+    <p class="trip-info__cost">
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
+    </p>
+  </section>`
+);
 
 export default class HeaderView extends AbstractView {
   #points = null;
@@ -45,6 +42,12 @@ export default class HeaderView extends AbstractView {
 
 
   #getDestinationNames() {
-    return this.#points.map((point) => this.#destinations.find((dest) => dest.id === point.destination).name);
+    const destinationIds = this.#points.map((point) => point.destination);
+    const destinationNames = destinationIds.map((id) => {
+      const destination = this.#destinations.find((dest) => dest.id === id);
+      return destination ? destination.name : null;
+    });
+
+    return destinationNames;
   }
 }

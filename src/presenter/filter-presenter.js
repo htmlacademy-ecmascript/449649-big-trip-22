@@ -18,14 +18,6 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  get filters() {
-    const points = this.#pointsModel.points;
-    return Object.values(FilterType).map((type) => ({
-      type,
-      count: filter[type](points).length
-    }));
-  }
-
   init() {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
@@ -43,6 +35,14 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+  }
+
+  get filters() {
+    const points = this.#pointsModel.points;
+    return Object.values(FilterType).map((type) => ({
+      type,
+      count: filter[type](points).length
+    }));
   }
 
   #handleModelEvent = () => {
