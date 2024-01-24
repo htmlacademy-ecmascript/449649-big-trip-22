@@ -1,21 +1,52 @@
-import { availlableDestinations } from './mock/destination';
-import { generateOffers } from './mock/offer';
 
-const FILTER_TYPES = {
+const MILLISECONDS_IN_HOUR = 3600000;
+const MILLISECONDS_IN_DAY = 86400000;
+
+const DateFormat = {
+  DATE_PICKER: 'd/m/y H:i',
+  DAY_MONTH: 'D MMM',
+  MONTH_DAY: 'MMM DD',
+  HOUR_MINUTES: 'HH:mm',
+  DAY_MONTH_YEAR: 'DD/MM/YY[&nbsp;]HH:mm',
+  MINUTES_WITH_POSTFIX: 'mm[M]',
+  HOUR_MINUTES_WITH_POSTFIX: 'HH[H] mm[M]',
+};
+
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past'
 };
 
-const SORT_TYPES = {
+const SortType = {
   DAY: 'day',
+  EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  DISABLED: 'disabled'
+  OFFERS: 'offers'
 };
 
-const POINT_TYPES = {
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NoPointsTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now'
+};
+
+const PointType = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRAIN: 'train',
@@ -28,22 +59,39 @@ const POINT_TYPES = {
   RESTARAUNT: 'restaurant'
 };
 
-const TYPES_POINTS = [
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Drive',
-  'Flight',
-  'Check-in',
-  'Sightseeing',
-  'Restaurant'
-];
+const DATE_CONFIG = {
+  dateFormat: DateFormat.DATE_PICKER,
+  enableTime: true,
+  'time_24hr': true,
+  locale: { firstDayOfWeek: 1 },
+  allowInput: true
+};
 
-const DEFAULT_POINT_TYPE = POINT_TYPES.FLIGHT;
+const DEFAULT_POINT = {
+  price: 0,
+  dateFrom: '',
+  dateTo: '',
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: PointType.FLIGHT
+};
 
-const AVAILLABLE_DESTINATIONS = availlableDestinations();
+const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
-const OFFERS = generateOffers();
-
-export { FILTER_TYPES, SORT_TYPES, POINT_TYPES, AVAILLABLE_DESTINATIONS, OFFERS, DEFAULT_POINT_TYPE, TYPES_POINTS };
+export {
+  MILLISECONDS_IN_DAY,
+  MILLISECONDS_IN_HOUR,
+  DateFormat,
+  FilterType,
+  SortType,
+  NoPointsTextType,
+  PointType,
+  UserAction,
+  UpdateType,
+  DEFAULT_POINT_TYPE,
+  POINT_TYPES,
+  DATE_CONFIG,
+  DEFAULT_POINT
+};

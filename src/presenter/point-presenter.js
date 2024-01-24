@@ -2,6 +2,7 @@ import { remove, render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utilities.js';
 import PointView from '../view/point-view.js';
 import EditView from '../view/edit-view.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -39,10 +40,10 @@ export default class PointPresenter {
 
     this.#pointViewComponent = new PointView({
       point: this.#point,
-      pointDestination: point.destination,
-      pointOffers: point.offers,
+      allDestinations: this.#allDestinations,
+      allOffers: this.#allOffers,
       onOpenClick: this.#handleOpenClick,
-      onCancelClick: this.#handleCancelClick,
+      onCancelClick: this.#handleCloseClick,
       onFavoriteClick: this.#handleFavoriteClick
     });
 
@@ -51,7 +52,7 @@ export default class PointPresenter {
       allOffers: this.#allOffers,
       allDestinations: this.#allDestinations,
       onCloseClick: this.#handleCloseClick,
-      onCancelClick: this.#handleCancelClick,
+      onDeleteClick: this.#handleDeleteClick,
       onFormSubmit: this.#handleFormSubmit
     });
 
@@ -114,16 +115,16 @@ export default class PointPresenter {
     this.#changePointToReadView();
   };
 
-  #handleCancelClick = () => {
-    this.#handleDataChange(this.#point);
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(UserAction.DELETE_POINT, UpdateType.MINOR, point);
   };
 
-  #handleFormSubmit = () => {
-    this.#handleDataChange(this.#point);
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
     this.#changePointToReadView();
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }

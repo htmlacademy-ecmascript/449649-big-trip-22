@@ -1,21 +1,10 @@
-export default class OffersModel {
-  #offers = null;
+import Observable from '../framework/observable.js';
+import { generateOffers } from '../mock/offer.js';
 
-  constructor(offers) {
-    this.#offers = offers;
-  }
+export default class OffersModel extends Observable {
+  #offers = generateOffers();
 
   get offers() {
     return this.#offers;
-  }
-
-  getByType(type) {
-    const foundOffer = this.#offers.find((offer) => offer.type === type);
-
-    if (foundOffer) {
-      return foundOffer.offers;
-    } else {
-      return null;
-    }
   }
 }

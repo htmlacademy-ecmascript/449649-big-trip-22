@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createFilterTemplate = (filter, isChecked) => {
+const createFilterTemplate = (filter, currentFilterType) => {
   const { type, count } = filter;
 
   return (`
@@ -10,9 +10,9 @@ const createFilterTemplate = (filter, isChecked) => {
         class="trip-filters__filter-input visually-hidden"
         type="radio"
         name="trip-filter"
-        value="everything"
-        ${isChecked ? 'checked' : ''}
+        ${type === currentFilterType ? 'checked' : ''}
         ${count === 0 ? 'disabled' : ''}
+        value="${type}"
       >
       <label class="trip-filters__filter-label" for="filter-${type}">
         ${type}
@@ -20,9 +20,9 @@ const createFilterTemplate = (filter, isChecked) => {
     </div>`);
 };
 
-const createFiltersTemplate = (filterItems) => {
+const createFiltersTemplate = (filterItems, currentFilterType) => {
   const filterItemsTemplate = filterItems
-    .map((filter, index) => createFilterTemplate(filter, index === 0))
+    .map((filter) => createFilterTemplate(filter, currentFilterType))
     .join('');
 
   return (`
@@ -33,13 +33,24 @@ const createFiltersTemplate = (filterItems) => {
 
 export default class FiltersView extends AbstractView {
   #filters = null;
+  #currentFilter = null;
+  #handleFilterTypeChange = null;
 
-  constructor({ filters }) {
+  constructor({ filters, currentFilterType, onFilterTypeChange }) {
     super();
     this.#filters = filters;
+    this.#currentFilter = currentFilterType;
+    this.#handleFilterTypeChange = onFilterTypeChange;
+
+    this.element.addEventListener('change', this.#filterTypeChangeHandler);
   }
 
   get template() {
-    return createFiltersTemplate(this.#filters);
+    return createFiltersTemplate(this.#filters, this.#currentFilter);
   }
+
+  #filterTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFilterTypeChange(evt.target.value);
+  };
 }

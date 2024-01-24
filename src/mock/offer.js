@@ -1,137 +1,136 @@
-import { POINT_TYPES, OFFERS } from '../const.js';
-import { nanoid } from 'nanoid';
+import { PointType } from '../const.js';
 
 const generateOffers = () => {
   const offers = [];
 
   const pointTypesOrder = [
-    POINT_TYPES.TAXI,
-    POINT_TYPES.BUS,
-    POINT_TYPES.TRAIN,
-    POINT_TYPES.SHIP,
-    POINT_TYPES.DRIVE,
-    POINT_TYPES.FLIGHT,
-    POINT_TYPES.CHECKIN,
-    POINT_TYPES.SIGHTSEEING,
-    POINT_TYPES.RESTARAUNT
+    PointType.TAXI,
+    PointType.BUS,
+    PointType.TRAIN,
+    PointType.SHIP,
+    PointType.DRIVE,
+    PointType.FLIGHT,
+    PointType.CHECKIN,
+    PointType.SIGHTSEEING,
+    PointType.RESTARAUNT
   ];
 
   pointTypesOrder.forEach((type) => {
     let typeOffers = [];
 
     switch (type) {
-      case POINT_TYPES.TAXI:
+      case PointType.TAXI:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '1',
             title: 'Upgrade to a business class',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '2',
             title: 'Choose the radio station',
             price: 60
           }
         ];
         break;
-      case POINT_TYPES.BUS:
+      case PointType.BUS:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '3',
             title: 'Choose seats',
             price: 120
           }
         ];
         break;
-      case POINT_TYPES.TRAIN:
+      case PointType.TRAIN:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '4',
             title: 'Add meal',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '5',
             title: 'Switch to comfort',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '6',
             title: 'Add luggage',
             price: 60
           }
         ];
         break;
-      case POINT_TYPES.SHIP:
+      case PointType.SHIP:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '7',
             title: 'Upgrade to a business class',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '8',
             title: 'Switch to comfort',
             price: 60
           }
         ];
         break;
-      case POINT_TYPES.DRIVE:
+      case PointType.DRIVE:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '9',
             title: 'Upgrade to a business class',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '10',
             title: 'Choose the radio station',
             price: 60
           }
         ];
         break;
-      case POINT_TYPES.FLIGHT:
+      case PointType.FLIGHT:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '11',
             title: 'Upgrade to a business class',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '12',
             title: 'Switch to comfort',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '13',
             title: 'Choose seats',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '14',
             title: 'Add luggage',
             price: 120
           },
           {
-            id: nanoid(),
+            id: '15',
             title: 'Travel by train',
             price: 60
           }
         ];
         break;
-      case POINT_TYPES.CHECKIN:
+      case PointType.CHECKIN:
         typeOffers = [
           {
-            id: nanoid(),
+            id: '16',
             title: 'Upgrade to a business class',
             price: 120
           }
         ];
         break;
-      case POINT_TYPES.SIGHTSEEING:
+      case PointType.SIGHTSEEING:
         typeOffers = [];
         break;
-      case POINT_TYPES.RESTARAUNT:
+      case PointType.RESTARAUNT:
         typeOffers = [];
         break;
       default:
@@ -144,8 +143,7 @@ const generateOffers = () => {
         offers: typeOffers.map((offer) => ({
           id: offer.id,
           title: offer.title,
-          price: offer.price,
-          isSelected: offer.isSelected
+          price: offer.price
         })),
       };
 
@@ -156,23 +154,15 @@ const generateOffers = () => {
   return offers;
 };
 
-const generateOffersByTypes = () => {
-  const offersByTypes = {};
-  Object.values(POINT_TYPES).forEach((type) => {
-    offersByTypes[type] = generateOffers(type);
-  });
-
-  return offersByTypes;
-};
-
 const getOffersByType = (type) => {
-  const typeOffers = OFFERS.find((offerType) => offerType.type === type);
-
-  if (typeOffers) {
-    return typeOffers.offers;
-  } else {
-    return [];
-  }
+  const allOffers = generateOffers();
+  const filteredOffers = allOffers.filter((offer) => offer.type === type.toLowerCase());
+  return filteredOffers;
 };
 
-export { generateOffers, generateOffersByTypes, getOffersByType };
+const getOffersIds = (type) => {
+  const typeOffers = getOffersByType(type);
+  return typeOffers.flatMap((offer) => offer.offers.map((o) => o.id));
+};
+
+export { generateOffers, getOffersIds };

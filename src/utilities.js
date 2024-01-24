@@ -1,21 +1,32 @@
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration.js';
-import { FILTER_TYPES } from './const.js';
+import minMax from 'dayjs/plugin/minMax';
+import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_HOUR, DateFormat, FilterType, SortType } from './const.js';
 
 dayjs.extend(durationPlugin);
+dayjs.extend(minMax);
 
-const filter = {
-  [FILTER_TYPES.EVERYTHING]: (points) => points,
-  [FILTER_TYPES.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
-  [FILTER_TYPES.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
-  [FILTER_TYPES.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
+const getDifferenceInTime = (start, end) => {
+  const difference = dayjs(end).diff(dayjs(start));
+
+  switch (true) {
+    case difference < MILLISECONDS_IN_HOUR:
+      return dayjs.duration(difference).format(DateFormat.MINUTES_WITH_POSTFIX);
+
+    case difference >= MILLISECONDS_IN_HOUR && difference < MILLISECONDS_IN_DAY:
+      return dayjs.duration(difference).format(DateFormat.HOUR_MINUTES_WITH_POSTFIX);
+
+    case difference >= MILLISECONDS_IN_DAY:
+      return Math.floor(dayjs.duration(difference).asDays()) < 10
+        ? `0${Math.floor(dayjs.duration(difference).asDays())}D ${dayjs.duration(difference).format(DateFormat.HOUR_MINUTES_WITH_POSTFIX)}`
+        : `${Math.floor(dayjs.duration(difference).asDays())}D ${dayjs.duration(difference).format(DateFormat.HOUR_MINUTES_WITH_POSTFIX)}`;
+  }
 };
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
-const formatDate = (date) => date ? dayjs(date).format('MMM DD') : '';
-const formatTime = (date) => date ? dayjs(date).format('HH:mm') : '';
-const getTimeDiff = (dateFrom, dateTo) => dayjs(dateTo).diff(dateFrom, 'minute');
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+const humanizeDate = (date, format) => date ? dayjs(date).format(format) : '';
+const getMinData = (items) => humanizeDate(dayjs.min(items.map((item) => dayjs(item.dateFrom))), DateFormat.DAY_MONTH);
+const getMaxData = (items) => humanizeDate(dayjs.max(items.map((item) => dayjs(item.dateTo))), DateFormat.DAY_MONTH);
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const sortPointsByPrice = (eventA, eventB) => eventB.basePrice - eventA.basePrice;
 const sortPointsByTime = (eventA, eventB) => {
   const durationA = dayjs(eventA.dateTo).diff(eventA.dateFrom);
@@ -30,4 +41,37 @@ const sortPointsByDay = (pointA, pointB) => {
   return dateA - dateB;
 };
 
-export { formatDate, formatTime, getTimeDiff, isEscapeKey, updateItem, sortPointsByPrice, sortPointsByTime, sortPointsByDay, filter };
+const getElementsById = (elements, itemsId) => {
+  if (Array.isArray(itemsId)) {
+    return elements.filter((element) => itemsId.find((id) => element.id === id));
+  }
+
+  return elements.find((element) => element.id === itemsId);
+};
+
+const filter = {
+  [FilterType.EVERYTHING]: (points) => points,
+  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs())),
+  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateTo).isBefore(dayjs())),
+  [FilterType.PRESENT]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs())),
+};
+
+const sort = {
+  [SortType.DAY]: (points) => points.sort(sortPointsByDay),
+  [SortType.PRICE]: (points) => points.sort(sortPointsByPrice),
+  [SortType.TIME]: (points) => points.sort(sortPointsByTime)
+};
+
+export {
+  humanizeDate,
+  getDifferenceInTime,
+  getMinData,
+  getMaxData,
+  isEscapeKey,
+  sortPointsByDay,
+  sortPointsByPrice,
+  sortPointsByTime,
+  getElementsById,
+  filter,
+  sort
+};

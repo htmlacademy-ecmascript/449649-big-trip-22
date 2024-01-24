@@ -1,28 +1,24 @@
-import BriefView from './view/brief-view.js';
-import FilterView from './view/filters-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
+import HeaderPresenter from './presenter/header-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import PointsModel from './model/points-model.js';
+import FilterModel from './model/filter-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
-import { RenderPosition, render } from './framework/render.js';
-import { generateFilter } from './mock/filter.js';
-import { generatePoint } from './mock/point.js';
-import { AVAILLABLE_DESTINATIONS, OFFERS } from './const.js';
-import { getRandomInteger } from './mock/util.js';
-const POINTS_COUNT = getRandomInteger(0, 5);
 
-const tripMain = document.querySelector('.trip-main');
-const tripFilters = document.querySelector('.trip-controls__filters');
-const tripEvents = document.querySelector('.trip-events');
-const pointsModel = new PointsModel(Array.from({ length: POINTS_COUNT }, generatePoint));
-const tripPresenter = new TripPresenter({
-  tripContainer: tripEvents,
-  pointsModel: pointsModel,
-  destinationsModel: new DestinationsModel(AVAILLABLE_DESTINATIONS),
-  offersModel: new OffersModel(OFFERS),
-});
-const filters = generateFilter(pointsModel.points);
+const tripContainer = document.querySelector('.trip-events');
+const filterContainer = document.querySelector('.trip-controls__filters');
+const headerContainer = document.querySelector('.trip-main');
 
-render(new BriefView, tripMain, RenderPosition.AFTERBEGIN);
-render(new FilterView({filters}), tripFilters);
+const pointsModel = new PointsModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
+const filterModel = new FilterModel();
+
+const tripPresenter = new TripPresenter(tripContainer, headerContainer, pointsModel, destinationsModel, offersModel, filterModel);
+const headerPresenter = new HeaderPresenter(headerContainer, pointsModel, destinationsModel);
+const filterPresenter = new FilterPresenter(filterContainer, filterModel, pointsModel);
+
 tripPresenter.init();
+headerPresenter.init();
+filterPresenter.init();
