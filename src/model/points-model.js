@@ -1,25 +1,36 @@
 import Observable from '../framework/observable.js';
-import { generatePoint } from '../mock/point.js';
-import { getRandomInteger } from '../mock/util.js';
-
-const POINTS_COUNT = getRandomInteger(0, 7);
-
 export default class PointsModel extends Observable {
   #pointsApiService = null;
-  #points = Array.from({ length: POINTS_COUNT }, generatePoint);
+  #points = [];
+  #offers = [];
+  #destinations = [];
+  #isLoading = true;
+  #isLoadingFailed = false;
 
   constructor({ pointsApiService }) {
     super();
     this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.points.then((points) => {
-      this.#points = points;
-      this._notify();
-    });
   }
 
   get points() {
     return this.#points;
+  }
+
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+      this.#offers = await this.#pointsApiService.offers;
+      this.#destinations = await this.#pointsApiService.destinations;
+      this.#isLoading = false;
+    } catch (err) {
+      this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
+
+      this.#isLoading = false;
+      this.#isLoadingFailed = true;
+    }
   }
 
   updatePoint(updateType, update) {
@@ -60,5 +71,22 @@ export default class PointsModel extends Observable {
     ];
 
     this._notify(updateType);
+  }
+
+  #adaptToClient(point) {
+    const adaptedPoint = {
+      ...point,
+      basePrice: point['base_price'],
+      dateFrom: point['date_from'],
+      dateTo: point['date_to'],
+      isFavorite: point['is_favorite'],
+    };
+
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
   }
 }

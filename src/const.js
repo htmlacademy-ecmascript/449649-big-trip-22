@@ -77,6 +77,19 @@ const DEFAULT_POINT = {
   type: PointType.FLIGHT
 };
 
+const BaseUrl = {
+  POINTS: 'points',
+  DESTINATIONS: 'destinations',
+  OFFERS: 'offers',
+};
+
+const ApiMetod = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
 const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
@@ -90,6 +103,8 @@ export {
   PointType,
   UserAction,
   UpdateType,
+  BaseUrl,
+  ApiMetod,
   DEFAULT_POINT_TYPE,
   POINT_TYPES,
   DATE_CONFIG,

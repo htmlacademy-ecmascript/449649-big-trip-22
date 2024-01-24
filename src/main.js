@@ -8,7 +8,7 @@ import OffersModel from './model/offers-model.js';
 import TasksApiService from './points-api-service.js';
 
 const END_POINT = 'https://21.objects.pages.academy/big-trip';
-const AUTHORIZATION = 'Basic eo0w590ik29889a';
+const AUTHORIZATION = 'Basic eo8w790ij29812a';
 
 const tripContainer = document.querySelector('.trip-events');
 const filterContainer = document.querySelector('.trip-controls__filters');
@@ -25,6 +25,7 @@ const tripPresenter = new TripPresenter(tripContainer, headerContainer, pointsMo
 const headerPresenter = new HeaderPresenter(headerContainer, pointsModel, destinationsModel);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, pointsModel);
 
+pointsModel.init();
 tripPresenter.init();
 headerPresenter.init();
 filterPresenter.init();
