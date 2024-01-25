@@ -4,7 +4,6 @@ import NewPointPresenter from './new-point-presenter.js';
 import AppMessageView from '../view/app-message-view.js';
 import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
-import TripView from '../view/trip-view.js';
 import { filter } from '../utilities.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utilities.js';
 import { SortType, UserAction, UpdateType, FilterType, LoadingStatus } from '../const.js';
@@ -19,10 +18,8 @@ export default class TripPresenter {
   #appMessageComponent = null;
   #filterModel = null;
 
-  #tripViewComponent = new TripView();
   #pointListViewComponent = new PointListView();
   #sortComponent = null;
-  #noPointComponent = null;
 
   #points = [];
   #pointPresenters = new Map();
@@ -198,8 +195,6 @@ export default class TripPresenter {
     const newPointPresenter = new NewPointPresenter({
       pointListContainer: this.#pointListViewComponent.element,
       pointsModel: this.#pointsModel,
-      allOffers: this.offers,
-      allDestinations: this.destinations,
       onDataChange: this.#handleViewAction,
       onResetForm: this.#handleNewEventFormClose
     });

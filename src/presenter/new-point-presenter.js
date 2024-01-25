@@ -1,7 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import { isEscapeKey } from '../utilities.js';
 import EditView from '../view/edit-view.js';
-import { nanoid } from 'nanoid';
 import { UserAction, UpdateType, DEFAULT_POINT } from '../const.js';
 
 export default class NewPointPresenter {
@@ -14,12 +13,10 @@ export default class NewPointPresenter {
   #pointsModel = null;
   #points = [];
 
-  constructor({ pointListContainer, pointsModel, allOffers, allDestinations, onDataChange, onResetForm }) {
+  constructor({ pointListContainer, pointsModel, onDataChange, onResetForm }) {
     this.#pointListContainer = pointListContainer;
     this.#pointsModel = pointsModel;
     this.#points = DEFAULT_POINT;
-    this.#allOffers = allOffers;
-    this.#allDestinations = allDestinations;
     this.#handleDataChange = onDataChange;
     this.#handleResetForm = onResetForm;
   }
@@ -31,8 +28,8 @@ export default class NewPointPresenter {
 
     this.#newPointComponent = new EditView({
       point: this.#points,
-      allOffers: this.#allOffers,
-      allDestinations: this.#allDestinations,
+      allOffers: this.#pointsModel.offers,
+      allDestinations: this.#pointsModel.destinations,
       onCloseClick: this.#handleCloseClick,
       onDeleteClick: this.#handleDeleteClick,
       onFormSubmit: this.#handleFormSubmit
@@ -60,7 +57,7 @@ export default class NewPointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, {id: nanoid(), ...point});
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, point);
     this.#closeNewPointForm();
   };
 
