@@ -37,13 +37,21 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
-const NoPointsTextType = {
+const LoadingStatus = {
+  LOAD: 'load',
+  FAILED_LOAD: 'Failed to load',
+};
+
+const AppMessage = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.PAST]: 'There are no past events now',
   [FilterType.PRESENT]: 'There are no present events now',
-  [FilterType.FUTURE]: 'There are no future events now'
+  [FilterType.FUTURE]: 'There are no future events now',
+  [LoadingStatus.LOAD]: 'Loading...',
+  [LoadingStatus.FAILED_LOAD]: 'Failed to load latest route information',
 };
 
 const PointType = {
@@ -68,13 +76,26 @@ const DATE_CONFIG = {
 };
 
 const DEFAULT_POINT = {
-  price: 0,
+  basePrice: 0,
   dateFrom: '',
   dateTo: '',
   destination: '',
   isFavorite: false,
   offers: [],
   type: PointType.FLIGHT
+};
+
+const BaseUrl = {
+  POINTS: 'points',
+  DESTINATIONS: 'destinations',
+  OFFERS: 'offers',
+};
+
+const ApiMetod = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
@@ -86,10 +107,13 @@ export {
   DateFormat,
   FilterType,
   SortType,
-  NoPointsTextType,
   PointType,
   UserAction,
   UpdateType,
+  BaseUrl,
+  ApiMetod,
+  LoadingStatus,
+  AppMessage,
   DEFAULT_POINT_TYPE,
   POINT_TYPES,
   DATE_CONFIG,
