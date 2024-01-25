@@ -45,9 +45,7 @@ export default class TripPresenter {
 
   get points() {
     this.#filterType = this.#filterModel.filter;
-    console.log('this.#filterType', this.#filterType);
     const points = this.#pointsModel.points;
-    console.log('points', points);
     const filteredTasks = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
