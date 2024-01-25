@@ -45,7 +45,9 @@ export default class TripPresenter {
 
   get points() {
     this.#filterType = this.#filterModel.filter;
+    console.log('this.#filterType', this.#filterType);
     const points = this.#pointsModel.points;
+    console.log('points', points);
     const filteredTasks = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
@@ -127,7 +129,7 @@ export default class TripPresenter {
 
   #renderPoints = () => {
     render(this.#pointListViewComponent, this.#tripContainer);
-    this.#pointsModel.points.forEach((point) => {
+    this.points.forEach((point) => {
       this.#renderPoint({ point: point, offers: this.#pointsModel.offers, destinations: this.#pointsModel.destinations });
     });
   };
