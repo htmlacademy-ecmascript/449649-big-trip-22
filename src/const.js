@@ -76,7 +76,7 @@ const DATE_CONFIG = {
 };
 
 const DEFAULT_POINT = {
-  price: 0,
+  basePrice: 0,
   dateFrom: '',
   dateTo: '',
   destination: '',
