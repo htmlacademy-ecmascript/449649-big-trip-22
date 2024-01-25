@@ -25,7 +25,9 @@ const tripPresenter = new TripPresenter(tripContainer, headerContainer, pointsMo
 const headerPresenter = new HeaderPresenter(headerContainer, pointsModel, destinationsModel);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, pointsModel);
 
-pointsModel.init();
+pointsModel.init()
+  .finally(() => {
+    headerPresenter.init();
+    filterPresenter.init();
+  });
 tripPresenter.init();
-headerPresenter.init();
-filterPresenter.init();

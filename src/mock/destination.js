@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement } from './util.js';
+import { getRandomInteger } from './util.js';
 
 const allDestinations = [
   {
@@ -59,6 +59,5 @@ const allDestinations = [
 ];
 
 const getAllDestinations = () => allDestinations;
-const getRandomDestinationId = () => getRandomArrayElement(allDestinations).id;
 
-export { getAllDestinations, getRandomDestinationId };
+export { getAllDestinations };

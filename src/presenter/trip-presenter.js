@@ -1,13 +1,13 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import NoPointView from '../view/no-point-view.js';
+import AppMessageView from '../view/app-message-view.js';
 import PointListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view.js';
 import { filter } from '../utilities.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utilities.js';
-import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
+import { SortType, UserAction, UpdateType, FilterType, LoadingStatus } from '../const.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 
 
@@ -16,6 +16,7 @@ export default class TripPresenter {
   #headerContainer = null;
 
   #pointsModel = null;
+  #appMessageComponent = null;
   #destinationsModel = null;
   #offersModel = null;
   #filterModel = null;
@@ -77,11 +78,19 @@ export default class TripPresenter {
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    if (this.#appMessageComponent) {
+      render(this.#pointListViewComponent, this.#tripContainer);
+      remove(this.#appMessageComponent);
+    }
+
     this.#newPointComponent.init();
   }
 
   #clearTrip(resetSortType = false) {
-    remove(this.#noPointComponent);
+    if (this.#appMessageComponent) {
+      remove(this.#appMessageComponent);
+    }
     remove(this.#sortComponent);
     this.#clearPointsList();
     this.#sortComponent = null;
@@ -92,19 +101,28 @@ export default class TripPresenter {
   }
 
   #renderTrip() {
+    if (this.#pointsModel.loading) {
+      this.#renderAppMessage(LoadingStatus.LOAD);
+      return;
+    }
+
+    if (this.#pointsModel.loadingFailed) {
+      this.#renderAppMessage(LoadingStatus.FAILED_LOAD);
+      return;
+    }
+
     if (this.points.length === 0) {
-      this.#renderNoPoints();
+      this.#renderAppMessage(this.#filterType);
+      //заблокировать кнопку New Event
     }
 
     this.#renderSort();
     this.#renderPoints();
   }
 
-  #renderNoPoints() {
-    this.#noPointComponent = new NoPointView({
-      filterType: this.#filterType
-    });
-    render(this.#noPointComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
+  #renderAppMessage(message) {
+    this.#appMessageComponent = new AppMessageView({messageType: message});
+    render(this.#appMessageComponent, this.#tripContainer);
   }
 
   #renderSort() {
@@ -162,6 +180,10 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearTrip({resetSortType: true});
+        this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        remove(this.#appMessageComponent);
         this.#renderTrip();
         break;
     }
