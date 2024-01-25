@@ -17,8 +17,6 @@ export default class TripPresenter {
 
   #pointsModel = null;
   #appMessageComponent = null;
-  #destinationsModel = null;
-  #offersModel = null;
   #filterModel = null;
 
   #tripViewComponent = new TripView();
@@ -32,14 +30,11 @@ export default class TripPresenter {
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor(tripContainer, headerContainer, pointsModel, destinationsModel, offersModel, filterModel) {
+  constructor(tripContainer, headerContainer, pointsModel, filterModel) {
     this.#tripContainer = tripContainer;
     this.#headerContainer = headerContainer;
     this.#pointsModel = pointsModel;
-    this.#destinationsModel = destinationsModel;
-    this.#offersModel = offersModel;
     this.#filterModel = filterModel;
-    this.#points = [...this.#pointsModel.points];
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -68,11 +63,11 @@ export default class TripPresenter {
   }
 
   get destinations() {
-    return this.#destinationsModel.destinations;
+    return this.#pointsModel.destinations;
   }
 
   get offers() {
-    return this.#offersModel.offers;
+    return this.#pointsModel.offers;
   }
 
   createPoint() {
@@ -111,7 +106,7 @@ export default class TripPresenter {
       return;
     }
 
-    if (this.points.length === 0) {
+    if (this.#pointsModel.points.length === 0) {
       this.#renderAppMessage(this.#filterType);
       //заблокировать кнопку New Event
     }
@@ -135,20 +130,18 @@ export default class TripPresenter {
 
   #renderPoints = () => {
     render(this.#pointListViewComponent, this.#tripContainer);
-    this.points.forEach((point) => {
-      this.#renderPoint(point);
+    this.#pointsModel.points.forEach((point) => {
+      this.#renderPoint({ point: point, offers: this.#pointsModel.offers, destinations: this.#pointsModel.destinations });
     });
   };
 
-  #renderPoint(point) {
+  #renderPoint({ point, offers, destinations }) {
     const pointPresenter = new PointPresenter({
       pointListContainer: this.#pointListViewComponent.element,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
-    pointPresenter.init(point);
+    pointPresenter.init(point, offers, destinations);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 

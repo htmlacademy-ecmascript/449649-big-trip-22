@@ -9,10 +9,9 @@ export default class HeaderPresenter {
   #destinationsModel = null;
   #headerComponent = null;
 
-  constructor(headerContainer, pointsModel, destinationsModel) {
+  constructor(headerContainer, pointsModel) {
     this.#headerContainer = headerContainer;
     this.#pointsModel = pointsModel;
-    this.#destinationsModel = destinationsModel;
 
     this.#pointsModel.addObserver(this.#handlePointsChange);
   }
@@ -26,7 +25,7 @@ export default class HeaderPresenter {
   }
 
   get destinations() {
-    return this.#destinationsModel.destinations;
+    return this.#pointsModel.destinations;
   }
 
   #renderHeaderList() {
