@@ -1,10 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import dayjs from 'dayjs';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { POINT_TYPES, DATE_CONFIG } from '../const.js';
-import { getElementsById } from '../utilities.js';
+import { POINT_TYPES, DATE_CONFIG, DateFormat } from '../const.js';
+import { getElementsById, humanizeDate } from '../utilities.js';
 
 const createOffersTemplate = (pointTypeOffers, offers) => (`
 <section class="event__section  event__section--offers">
@@ -41,7 +40,7 @@ const createListTitlesTemplate = (allDestinations) => {
 };
 
 
-const createFieldDestination = (type, name, allDestinations) =>
+const createFieldDestination = (type, name, allDestinations, isDisabled) =>
   `<div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
@@ -51,7 +50,8 @@ const createFieldDestination = (type, name, allDestinations) =>
         id="event-destination-1" type="text"
         name="event-destination"
         value="${he.encode(name)}"
-        list="destination-list-1"
+        list="destination-list-1
+        ${isDisabled ? 'disabled' : ''}"
       >
       ${createListTitlesTemplate(allDestinations)}
     </div>`;
@@ -101,7 +101,7 @@ const createPointTypeList = (type) => {
   </div>`;
 };
 
-const createFieldType = (type) => `
+const createFieldType = (type, isDisabled) => `
 	<div class="event__type-wrapper">
 		<label class="event__type  event__type-btn" for="event-type-toggle-1">
 			<span class="visually-hidden">Choose event type</span>
@@ -109,13 +109,13 @@ const createFieldType = (type) => `
       src="img/icons/${type}.png"
       alt="Event type icon">
 		</label>
-		<input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+		<input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 		  ${createPointTypeList(type)}
 	</div>
 `;
 
 const createFieldSchedule = (point) => {
-  const { dateFrom, dateTo } = point;
+  const { dateFrom, dateTo, isDisabled } = point;
 
   return (`
     <div class="event__field-group  event__field-group--time">
@@ -125,7 +125,9 @@ const createFieldSchedule = (point) => {
         id="event-start-time-1"
         type="text"
         name="event-start-time"
-        value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}">
+        value="value=${humanizeDate(dateFrom, DateFormat.DAY_MONTH_YEAR)}"
+        ${isDisabled ? 'disabled' : ''}
+        >
       —
       <label class="visually-hidden" for="event-end-time-1">To</label>
       <input
@@ -133,12 +135,14 @@ const createFieldSchedule = (point) => {
         id="event-end-time-1"
         type="text"
         name="event-end-time"
-        value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}">
+        value="value=${humanizeDate(dateTo, DateFormat.DAY_MONTH_YEAR)}"
+        ${isDisabled ? 'disabled' : ''}
+        >
     </div>
   `);
 };
 
-const createFieldPrice = (price) => (`
+const createFieldPrice = (basePrice, isDisabled) => (`
   <div class="event__field-group  event__field-group--price">
     <label class="event__label" for="event-price-1">
       <span class="visually-hidden">Price</span>
@@ -148,9 +152,12 @@ const createFieldPrice = (price) => (`
         class="event__input  event__input--price"
         id="event-price-1"
         type="number"
-        min="0"
+        min="1"
+        max="100000"
         name="event-price"
-        value="${price}">
+        value="${basePrice}"
+        ${isDisabled ? 'disabled' : ''}
+        required>
     </div>
   `);
 
@@ -160,16 +167,15 @@ const createButtonSubmit = (isDisabled, isSaving) =>
     type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}
   </button>`;
 
-const createButtonDelete = () =>
+const createButtonCancelOrDelete = (isDisabled, isDeleting) =>
   `<button
       class="event__reset-btn"
-      type="reset">
-        Delete
+      type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}
     </button>`;
 
 const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const point = state;
-  const {basePrice, destination, offers, type} = point;
+  const {basePrice, destination, offers, type, isDisabled, isDeleting, isSaving} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
   const destinationInfo = getElementsById(allDestinations, destination);
   const { name } = destinationInfo || {name: ''};
@@ -177,24 +183,23 @@ const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const offersByType = (allOffers?.find((item) => item.type === point.type) ?? {}).offers;
   const hasOffers = offersByType?.length > 0;
   const hasDestination = destinationInfo !== undefined;
-  const { isDisabled, isSaving } = state;
 
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
-          ${createFieldType(type)}
+          ${createFieldType(type, isDisabled)}
           ${createFieldDestination(type, name, allDestinations)}
           ${createFieldSchedule(point)}
-          ${createFieldPrice(basePrice)}
+          ${createFieldPrice(basePrice, isDisabled)}
           ${createButtonSubmit(isDisabled, isSaving)}
-          ${createButtonDelete()}
+          ${createButtonCancelOrDelete(isDisabled, isDeleting)}
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
         <section class="event__details">
-          ${hasOffers ? createOffersTemplate(pointTypeOffers, offers) : ''}
+          ${hasOffers ? createOffersTemplate(pointTypeOffers, offers, isDisabled) : ''}
           ${hasDestination ? createDestinationTemplate(destinationInfo) : ''}
         </section>
       </form>
@@ -213,7 +218,7 @@ export default class EditView extends AbstractStatefulView {
 
   constructor({ point, allOffers, allDestinations, onCloseClick, onDeleteClick, onFormSubmit }) {
     super();
-    this._setState(point);
+    this._setState({...point, isSaving: false, isDeleting: false});
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleCloseClick = onCloseClick;
