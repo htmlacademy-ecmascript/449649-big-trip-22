@@ -45,6 +45,11 @@ const LoadingStatus = {
   FAILED_LOAD: 'Failed to load',
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 const AppMessage = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.PAST]: 'There are no past events now',
@@ -113,6 +118,7 @@ export {
   BaseUrl,
   ApiMetod,
   LoadingStatus,
+  TimeLimit,
   AppMessage,
   DEFAULT_POINT_TYPE,
   POINT_TYPES,

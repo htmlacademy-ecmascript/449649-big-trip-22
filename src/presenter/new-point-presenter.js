@@ -11,12 +11,12 @@ export default class NewPointPresenter {
   #allDestinations = null;
   #handleResetForm = null;
   #pointsModel = null;
-  #points = [];
+  #point = [];
 
   constructor({ pointListContainer, pointsModel, onDataChange, onResetForm }) {
     this.#pointListContainer = pointListContainer;
     this.#pointsModel = pointsModel;
-    this.#points = DEFAULT_POINT;
+    this.#point = DEFAULT_POINT;
     this.#handleDataChange = onDataChange;
     this.#handleResetForm = onResetForm;
   }
@@ -27,7 +27,7 @@ export default class NewPointPresenter {
     }
 
     this.#newPointComponent = new EditView({
-      point: this.#points,
+      point: this.#point,
       allOffers: this.#pointsModel.offers,
       allDestinations: this.#pointsModel.destinations,
       onCloseClick: this.#handleCloseClick,
@@ -56,9 +56,27 @@ export default class NewPointPresenter {
     this.#handleResetForm();
   };
 
+  setSaving() {
+    this.#newPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#newPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this.#newPointComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MAJOR, point);
-    this.#closeNewPointForm();
   };
 
   #handleCloseClick = () => {
