@@ -17,7 +17,7 @@ addNewEventButton.addEventListener('click', handleNewEventButtonClick);
 const pointsModel = new PointsModel({ pointsApiService: new TasksApiService(END_POINT, AUTHORIZATION) });
 const filterModel = new FilterModel();
 
-const tripPresenter = new TripPresenter(tripContainer, headerContainer, addNewEventButton, pointsModel, filterModel, handleNewEventFormClose);
+const tripPresenter = new TripPresenter(tripContainer, addNewEventButton, pointsModel, filterModel, handleNewEventFormClose);
 const headerPresenter = new HeaderPresenter(headerContainer, pointsModel);
 const filterPresenter = new FilterPresenter(filterContainer, filterModel, pointsModel);
 

@@ -11,7 +11,6 @@ import { SortType, UserAction, UpdateType, FilterType, LoadingStatus, TimeLimit 
 
 export default class TripPresenter {
   #tripContainer = null;
-  #headerContainer = null;
 
   #pointsModel = null;
   #appMessageComponent = null;
@@ -33,9 +32,8 @@ export default class TripPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor(tripContainer, headerContainer, addNewEventButton, pointsModel, filterModel, onNewEventDestroy) {
+  constructor(tripContainer, addNewEventButton, pointsModel, filterModel, onNewEventDestroy) {
     this.#tripContainer = tripContainer;
-    this.#headerContainer = headerContainer;
     this.#addNewEventButton = addNewEventButton;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
@@ -127,7 +125,7 @@ export default class TripPresenter {
       return;
     }
 
-    if (this.#pointsModel.points.length === 0) {
+    if (this.points.length === 0) {
       this.#renderAppMessage(this.#filterType);
       this.#addNewEventButton.disabled = false;
     }

@@ -15,8 +15,6 @@ export default class PointPresenter {
   #handleModeChange = null;
   #pointViewComponent = null;
   #pointEditComponent = null;
-  #destinationsModel = null;
-  #offersModel = null;
   #allOffers = null;
   #allDestinations = null;
   #point = null;
@@ -135,7 +133,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      this.#changePointToReadView();
+      this.#handleCloseClick();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
@@ -158,6 +156,6 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, {...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }

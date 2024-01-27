@@ -1,4 +1,4 @@
-
+const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const MILLISECONDS_IN_HOUR = 3600000;
 const MILLISECONDS_IN_DAY = 86400000;
 
@@ -71,6 +71,7 @@ const PointType = {
   SIGHTSEEING: 'sightseeing',
   RESTARAUNT: 'restaurant'
 };
+const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
 const DATE_CONFIG = {
   dateFormat: DateFormat.DATE_PICKER,
@@ -102,9 +103,6 @@ const ApiMetod = {
   POST: 'POST',
   DELETE: 'DELETE',
 };
-
-const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
 export {
   MILLISECONDS_IN_DAY,

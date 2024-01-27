@@ -50,10 +50,6 @@ export default class FilterPresenter {
   };
 
   #handleFilterTypeChange = (filterType) => {
-    if (this.#filterModel.filter === filterType) {
-      return;
-    }
-
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

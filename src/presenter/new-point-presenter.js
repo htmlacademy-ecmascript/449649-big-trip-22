@@ -7,8 +7,6 @@ export default class NewPointPresenter {
   #pointListContainer = null;
   #handleDataChange = null;
   #newPointComponent = null;
-  #allOffers = null;
-  #allDestinations = null;
   #handleResetForm = null;
   #pointsModel = null;
   #point = [];

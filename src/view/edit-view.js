@@ -43,30 +43,30 @@ const createFieldDestination = (type, name, allDestinations) =>
   </div>`;
 
 const createPicturesTemplate = (pictures) => {
-  const createPictureTemplate = pictures.map((photo, index) => (
+  const createPictureTemplate = pictures?.map((photo, index) => (
     `<img class="event__photo" src="${photo.src}" alt="Event photo ${index + 1}">`
   )).join('');
 
-  return (
-    `<div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${createPictureTemplate}
-      </div>
-    </div>`
-  );
+  return pictures.length > 0
+    ? `<div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${createPictureTemplate}
+        </div>
+      </div>`
+    : '';
 };
 
 const createDestinationTemplate = (destination) => {
-  const { description, pictures = [] } = destination;
-  return `
-    <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">
-        Destination
-      </h3>
-      <p class="event__destination-description">${description}</p>
-      ${pictures ? createPicturesTemplate(pictures) : ''}
-    </section>
-  `;
+  const { description, pictures = [] } = destination || { description: '', pictures: [] };
+  return description.length > 0 || pictures.length > 0
+    ? `<section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">
+          Destination
+        </h3>
+        <p class="event__destination-description">${description}</p>
+        ${pictures ? createPicturesTemplate(pictures) : ''}
+      </section>`
+    : '';
 };
 
 const createPointTypeList = (type) => {
@@ -111,7 +111,7 @@ const createFieldSchedule = (point) => {
         id="event-start-time-1"
         type="text"
         name="event-start-time"
-        value="value=${humanizeDate(dateFrom, DateFormat.DAY_MONTH_YEAR)}"
+        value="${humanizeDate(dateFrom, DateFormat.DAY_MONTH_YEAR)}"
         ${isDisabled ? 'disabled' : ''}
         >
       —
@@ -121,7 +121,7 @@ const createFieldSchedule = (point) => {
         id="event-end-time-1"
         type="text"
         name="event-end-time"
-        value="value=${humanizeDate(dateTo, DateFormat.DAY_MONTH_YEAR)}"
+        value="${humanizeDate(dateTo, DateFormat.DAY_MONTH_YEAR)}"
         ${isDisabled ? 'disabled' : ''}
         >
     </div>
@@ -147,13 +147,13 @@ const createFieldPrice = (basePrice, isDisabled) => (`
     </div>
   `);
 
-const createButtonSubmit = (isDisabled, isSaving) =>
+const createButtonSubmit = (isSaving) =>
   `<button
     class="event__save-btn  btn  btn--blue"
-    type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}
+    type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}
   </button>`;
 
-const createButtonCancelOrDelete = (id, isDisabled, isDeleting) => {
+const createButtonCancelOrDelete = (id, isDisabled, isSaving, isDeleting) => {
   const createCancelOrDelete = () => {
     if (id === undefined) {
       return 'Cancel';
@@ -165,7 +165,7 @@ const createButtonCancelOrDelete = (id, isDisabled, isDeleting) => {
   return (
     `<button
       class="event__reset-btn"
-      type="reset" ${isDisabled ? 'disabled' : ''}>
+      type="reset" ${isDisabled || isSaving ? 'disabled' : ''}>
       ${id === 0 ? 'Cancel' : createCancelOrDelete()}
     </button>`
   );
@@ -185,13 +185,13 @@ const createRollupButton = (id) => {
 
 const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const point = state;
-  const {id, basePrice, destination, offers, type, isDisabled, isDeleting, isSaving} = point;
+  const { id, basePrice, destination, offers, type, isDisabled, isDeleting, isSaving } = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
   const destinationInfo = getElementsById(allDestinations, destination);
-  const { name } = destinationInfo || {name: ''};
+  const { name } = destinationInfo || { name: '' };
 
-  const hasOffers = pointTypeOffers?.length > 0;
-  const hasDestination = destinationInfo !== undefined;
+  const offersByType = (allOffers?.find((item) => item.type === point.type) ?? {}).offers;
+  const hasOffers = offersByType?.length > 0;
 
   return (
     `<li class="trip-events__item">
@@ -207,7 +207,7 @@ const createEditViewTemplate = (state, allOffers, allDestinations) => {
         </header>
         <section class="event__details">
           ${hasOffers ? createOffersTemplate(pointTypeOffers, offers, isDisabled) : ''}
-          ${hasDestination ? createDestinationTemplate(destinationInfo) : ''}
+          ${createDestinationTemplate(destinationInfo)}
         </section>
       </form>
     </li>`
@@ -225,7 +225,7 @@ export default class EditView extends AbstractStatefulView {
 
   constructor({ point, allOffers, allDestinations, onCloseClick, onDeleteClick, onFormSubmit }) {
     super();
-    this._setState({...point, isSaving: false, isDeleting: false});
+    this._setState({ ...point, isSaving: false, isDeleting: false });
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleCloseClick = onCloseClick;
@@ -280,7 +280,7 @@ export default class EditView extends AbstractStatefulView {
   }
 
   static parseStateToPoint(state) {
-    const point = {...state};
+    const point = { ...state };
 
     delete point.isDisabled;
     delete point.isSaving;
@@ -291,8 +291,7 @@ export default class EditView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     this.updateElement({
-      type: evt.target.value,
-      offer: []
+      type: evt.target.value
     });
   };
 
@@ -338,7 +337,7 @@ export default class EditView extends AbstractStatefulView {
       dateFromElement,
       {
         ...DATE_CONFIG,
-        defaultDate: this._state.dateFrom || 'today',
+        defaultDate: this._state.dateFrom || '',
         onChange: this.#dateFromCloseHandler,
         maxDate: this._state.dateTo,
       }
@@ -347,7 +346,7 @@ export default class EditView extends AbstractStatefulView {
       dateToElement,
       {
         ...DATE_CONFIG,
-        defaultDate: this._state.dateTo || 'today',
+        defaultDate: this._state.dateTo || '',
         onChange: this.#dateToCloseHandler,
         minDate: this._state.dateFrom,
       }
