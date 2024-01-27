@@ -3,16 +3,26 @@ import { getMinData, getMaxData } from '../utilities';
 
 const MAX_DESTINATIONS_TO_RENDER = 3;
 
+const createTripTitleTemplate = (destinationNames) => (
+  `<h1 class="trip-info__title">
+    ${destinationNames.length > MAX_DESTINATIONS_TO_RENDER
+    ? `${destinationNames[0]} &mdash;...&mdash; ${destinationNames[destinationNames.length - 1]}`
+    : destinationNames.join(' &mdash; ')}
+  </h1>`
+);
+
 const createHeaderTemplate = ({totalPrice, destinationNames, points}) => (
-  `<section class="trip-main__trip-info  trip-info">
-    <div class="trip-info__main">
-      <h1 class="trip-info__title">${destinationNames.length > MAX_DESTINATIONS_TO_RENDER ? `${destinationNames[0]} &mdash;...&mdash; ${destinationNames[destinationNames.length - 1]}` : destinationNames.join(' &mdash; ')}</h1>
-      <p class="trip-info__dates">${getMinData(points)}&nbsp;&mdash;&nbsp;${getMaxData(points)}</p>
-    </div>
-    <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
-    </p>
-  </section>`
+  points !== undefined || points.length !== 0 ?
+    `<section class="trip-main__trip-info  trip-info">
+      <div class="trip-info__main">
+        <h1 class="trip-info__title">${createTripTitleTemplate(destinationNames)}</h1>
+        <p class="trip-info__dates">${getMinData(points)}&nbsp;&mdash;&nbsp;${getMaxData(points)}</p>
+      </div>
+      <p class="trip-info__cost">
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
+      </p>
+    </section>`
+    : ''
 );
 
 export default class HeaderView extends AbstractView {

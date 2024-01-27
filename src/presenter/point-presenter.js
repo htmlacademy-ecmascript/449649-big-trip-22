@@ -155,7 +155,6 @@ export default class PointPresenter {
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
-    this.#changePointToReadView();
   };
 
   #handleFavoriteClick = () => {

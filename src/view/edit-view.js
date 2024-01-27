@@ -5,7 +5,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import { POINT_TYPES, DATE_CONFIG, DateFormat } from '../const.js';
 import { getElementsById, humanizeDate } from '../utilities.js';
 
-const createOffersTemplate = (pointTypeOffers, offers) => (`
+const createOffersTemplate = (pointTypeOffers, offers, isDisabled) => (`
 <section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
   <div class="event__available-offers">
@@ -17,7 +17,8 @@ const createOffersTemplate = (pointTypeOffers, offers) => (`
         type="checkbox"
         name="event-offer-${offer.title}"
         data-id="${offer.id}"
-        ${offers.includes(offer.id) ? 'checked' : ''}>
+        ${offers.includes(offer.id) ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.title}-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -30,31 +31,16 @@ const createOffersTemplate = (pointTypeOffers, offers) => (`
   </div>
 </section>`);
 
-const createListTitlesTemplate = (allDestinations) => {
-  const titles = Array.from(new Set(allDestinations.map((destination) => destination.name)));
-  return `
-    <datalist id="destination-list-1">
-      ${titles.map((title) => `<option value="${title}"></option>`).join('')}
-    </datalist>
-  `;
-};
-
-
-const createFieldDestination = (type, name, allDestinations, isDisabled) =>
+const createFieldDestination = (type, name, allDestinations) =>
   `<div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-      </label>
-      <input
-        class="event__input  event__input--destination"
-        id="event-destination-1" type="text"
-        name="event-destination"
-        value="${he.encode(name)}"
-        list="destination-list-1
-        ${isDisabled ? 'disabled' : ''}"
-      >
-      ${createListTitlesTemplate(allDestinations)}
-    </div>`;
+    <label class="event__label  event__type-output" for="event-destination-1">
+      ${type}
+    </label>
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" required value="${he.encode(name)}" list="destination-list-1">
+    <datalist id="destination-list-1">
+      ${allDestinations.map((element) => (`<option value="${element.name}"></option>`)).join('')}
+    </datalist>
+  </div>`;
 
 const createPicturesTemplate = (pictures) => {
   const createPictureTemplate = pictures.map((photo, index) => (
@@ -167,21 +153,44 @@ const createButtonSubmit = (isDisabled, isSaving) =>
     type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}
   </button>`;
 
-const createButtonCancelOrDelete = (isDisabled, isDeleting) =>
-  `<button
+const createButtonCancelOrDelete = (id, isDisabled, isDeleting) => {
+  const createCancelOrDelete = () => {
+    if (id === undefined) {
+      return 'Cancel';
+    }
+
+    return isDeleting ? 'Deleting...' : 'Delete';
+  };
+
+  return (
+    `<button
       class="event__reset-btn"
-      type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}
-    </button>`;
+      type="reset" ${isDisabled ? 'disabled' : ''}>
+      ${id === 0 ? 'Cancel' : createCancelOrDelete()}
+    </button>`
+  );
+};
+
+const createRollupButton = (id) => {
+  if (id === 0) {
+    return '';
+  }
+
+  return (
+    `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`
+  );
+};
 
 const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const point = state;
-  const {basePrice, destination, offers, type, isDisabled, isDeleting, isSaving} = point;
+  const {id, basePrice, destination, offers, type, isDisabled, isDeleting, isSaving} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
   const destinationInfo = getElementsById(allDestinations, destination);
   const { name } = destinationInfo || {name: ''};
 
-  const offersByType = (allOffers?.find((item) => item.type === point.type) ?? {}).offers;
-  const hasOffers = offersByType?.length > 0;
+  const hasOffers = pointTypeOffers?.length > 0;
   const hasDestination = destinationInfo !== undefined;
 
   return (
@@ -193,10 +202,8 @@ const createEditViewTemplate = (state, allOffers, allDestinations) => {
           ${createFieldSchedule(point)}
           ${createFieldPrice(basePrice, isDisabled)}
           ${createButtonSubmit(isDisabled, isSaving)}
-          ${createButtonCancelOrDelete(isDisabled, isDeleting)}
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          ${createButtonCancelOrDelete(id, isDisabled, isDeleting)}
+          ${createRollupButton(id)}
         </header>
         <section class="event__details">
           ${hasOffers ? createOffersTemplate(pointTypeOffers, offers, isDisabled) : ''}

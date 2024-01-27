@@ -8,8 +8,6 @@ import SortView from '../view/sort-view.js';
 import { filter } from '../utilities.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utilities.js';
 import { SortType, UserAction, UpdateType, FilterType, LoadingStatus, TimeLimit } from '../const.js';
-import NewEventButtonView from '../view/new-event-button-view.js';
-
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -18,6 +16,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #appMessageComponent = null;
   #filterModel = null;
+  #addNewEventButton = null;
 
   #pointListViewComponent = new PointListView();
   #sortComponent = null;
@@ -34,19 +33,27 @@ export default class TripPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT,
   });
 
-  constructor(tripContainer, headerContainer, pointsModel, filterModel) {
+  constructor(tripContainer, headerContainer, addNewEventButton, pointsModel, filterModel, onNewEventDestroy) {
     this.#tripContainer = tripContainer;
     this.#headerContainer = headerContainer;
+    this.#addNewEventButton = addNewEventButton;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+
+    this.#addNewEventButton.disabled = true;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#pointListViewComponent.element,
+      pointsModel: this.#pointsModel,
+      onDataChange: this.#handleViewAction,
+      onResetForm: onNewEventDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
-    this.#newPointComponent = new NewEventButtonView({onBtnClick: this.#handleAddEventBtnClick});
-    render(this.#newPointComponent, this.#headerContainer);
     this.#renderTrip();
   }
 
@@ -83,7 +90,13 @@ export default class TripPresenter {
       remove(this.#appMessageComponent);
     }
 
-    this.#newPointComponent.init();
+    this.#newPointPresenter.init();
+  }
+
+  recoverAppMessage() {
+    if (this.points.length === 0) {
+      this.#renderAppMessage(this.#filterType);
+    }
   }
 
   #clearTrip(resetSortType = false) {
@@ -116,9 +129,10 @@ export default class TripPresenter {
 
     if (this.#pointsModel.points.length === 0) {
       this.#renderAppMessage(this.#filterType);
-      //заблокировать кнопку New Event
+      this.#addNewEventButton.disabled = false;
     }
 
+    this.#addNewEventButton.disabled = false;
     this.#renderSort();
     this.#renderPoints();
   }
@@ -218,24 +232,12 @@ export default class TripPresenter {
     }
   };
 
-  #handleAddEventBtnClick = () => {
-    this.#newPointComponent.element.disabled = true;
-    this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#pointListViewComponent.element,
-      pointsModel: this.#pointsModel,
-      onDataChange: this.#handleViewAction,
-      onResetForm: this.#handleNewEventFormClose
-    });
-    this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init();
-  };
-
   #handleNewEventFormClose = () => {
     this.#newPointComponent.element.disabled = false;
   };
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 }
