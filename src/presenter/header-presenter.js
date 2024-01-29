@@ -28,6 +28,10 @@ export default class HeaderPresenter {
     return this.#pointsModel.destinations;
   }
 
+  get offers() {
+    return this.#pointsModel.offers;
+  }
+
   #renderHeaderList() {
     if (this.#headerComponent) {
       remove(this.#headerComponent);
@@ -37,7 +41,8 @@ export default class HeaderPresenter {
     }
     this.#headerComponent = new HeaderView({
       points: sort[SortType.DAY](this.points),
-      destinations: this.destinations
+      destinations: this.destinations,
+      offers: this.offers
     });
     render(this.#headerComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
   }
