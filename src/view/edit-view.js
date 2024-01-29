@@ -31,12 +31,20 @@ const createOffersTemplate = (pointTypeOffers, offers, isDisabled) => (`
   </div>
 </section>`);
 
-const createFieldDestination = (type, name, allDestinations) =>
+const createFieldDestination = (type, name, allDestinations, isDisabled) =>
   `<div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
       ${type}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" required value="${he.encode(name)}" list="destination-list-1">
+    <input
+      class="event__input  event__input--destination"
+      id="event-destination-1"
+      type="text"
+      name="event-destination"
+      required
+      value="${he.encode(name)}"
+      list="destination-list-1"
+      ${isDisabled ? 'disabled' : ''}>
     <datalist id="destination-list-1">
       ${allDestinations.map((element) => (`<option value="${element.name}"></option>`)).join('')}
     </datalist>
@@ -171,17 +179,10 @@ const createButtonCancelOrDelete = (id, isDisabled, isSaving, isDeleting) => {
   );
 };
 
-const createRollupButton = (id) => {
-  if (id === 0) {
-    return '';
-  }
-
-  return (
-    `<button class="event__rollup-btn" type="button">
-      <span class="visually-hidden">Open event</span>
-    </button>`
-  );
-};
+const createRollupButton = (isDisabled) => `
+<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
+  <span class="visually-hidden">Open event</span>
+</button>`;
 
 const createEditViewTemplate = (state, allOffers, allDestinations) => {
   const point = state;
@@ -198,16 +199,16 @@ const createEditViewTemplate = (state, allOffers, allDestinations) => {
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           ${createFieldType(type, isDisabled)}
-          ${createFieldDestination(type, name, allDestinations)}
+          ${createFieldDestination(type, name, allDestinations, isDisabled)}
           ${createFieldSchedule(point)}
           ${createFieldPrice(basePrice, isDisabled)}
           ${createButtonSubmit(isDisabled, isSaving)}
-          ${createButtonCancelOrDelete(id, isDisabled, isDeleting)}
-          ${createRollupButton(id)}
+          ${createButtonCancelOrDelete(id, isDisabled, isSaving, isDeleting)}
+          ${createRollupButton(isDisabled)}
         </header>
         <section class="event__details">
           ${hasOffers ? createOffersTemplate(pointTypeOffers, offers, isDisabled) : ''}
-          ${createDestinationTemplate(destinationInfo)}
+          ${createDestinationTemplate(destinationInfo, isDisabled)}
         </section>
       </form>
     </li>`

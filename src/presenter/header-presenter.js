@@ -6,7 +6,6 @@ import HeaderView from '../view/header-view';
 export default class HeaderPresenter {
   #headerContainer = null;
   #pointsModel = null;
-  #destinationsModel = null;
   #headerComponent = null;
 
   constructor(headerContainer, pointsModel) {

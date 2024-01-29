@@ -20,7 +20,6 @@ export default class TripPresenter {
   #pointListViewComponent = new PointListView();
   #sortComponent = null;
 
-  #points = [];
   #pointPresenters = new Map();
   #newPointPresenter = null;
   #newPointComponent = null;
