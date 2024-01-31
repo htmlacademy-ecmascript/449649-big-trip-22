@@ -27,7 +27,6 @@ export default class PointsModel extends Observable {
 
       this.#isLoading = false;
       this.#isLoadingFailed = true;
-      this._notify(UpdateType.ERROR);
     }
 
     this._notify(UpdateType.INIT);
@@ -70,7 +69,7 @@ export default class PointsModel extends Observable {
         ...this.#points.slice(index + 1),
       ];
 
-      setTimeout(() => this._notify(updateType, updatedPoint), 1000);
+      this._notify(updateType, updatedPoint);
     } catch(err) {
       throw new Error('Can\'t update point');
     }

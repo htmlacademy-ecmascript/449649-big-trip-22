@@ -174,7 +174,7 @@ export default class TripPresenter {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
         try {
-          this.#pointsModel.updatePoint(updateType, update);
+          await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
           this.#pointPresenters.get(update.id).setAborting();
         }
