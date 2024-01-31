@@ -9,12 +9,12 @@ export default class NewPointPresenter {
   #newPointComponent = null;
   #handleResetForm = null;
   #pointsModel = null;
-  #point = [];
+  #points = [];
 
   constructor({ pointListContainer, pointsModel, onDataChange, onResetForm }) {
     this.#pointListContainer = pointListContainer;
     this.#pointsModel = pointsModel;
-    this.#point = DEFAULT_POINT;
+    this.#points = DEFAULT_POINT;
     this.#handleDataChange = onDataChange;
     this.#handleResetForm = onResetForm;
   }
@@ -25,7 +25,7 @@ export default class NewPointPresenter {
     }
 
     this.#newPointComponent = new EditView({
-      point: this.#point,
+      point: this.#points,
       allOffers: this.#pointsModel.offers,
       allDestinations: this.#pointsModel.destinations,
       onCloseClick: this.#handleCloseClick,

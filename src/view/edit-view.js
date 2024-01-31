@@ -261,7 +261,7 @@ export default class EditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offerChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.#setDatepickers();
   }
 
@@ -312,7 +312,7 @@ export default class EditView extends AbstractStatefulView {
   };
 
 
-  #priceChangeHandler = (evt) => {
+  #priceInputHandler = (evt) => {
     this._setState({
       basePrice: Number(evt.target.value)
     });

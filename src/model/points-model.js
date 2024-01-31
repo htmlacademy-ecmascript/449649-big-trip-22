@@ -27,6 +27,7 @@ export default class PointsModel extends Observable {
 
       this.#isLoading = false;
       this.#isLoadingFailed = true;
+      this._notify(UpdateType.ERROR);
     }
 
     this._notify(UpdateType.INIT);
