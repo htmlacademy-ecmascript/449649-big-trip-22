@@ -174,7 +174,7 @@ const createButtonCancelOrDelete = (id, isDisabled, isSaving, isDeleting) => {
     `<button
       class="event__reset-btn"
       type="reset" ${isDisabled || isSaving ? 'disabled' : ''}>
-      ${id === 0 ? 'Cancel' : createCancelOrDelete()}
+      ${id === undefined ? 'Cancel' : createCancelOrDelete()}
     </button>`
   );
 };

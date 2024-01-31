@@ -2,6 +2,19 @@ const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-i
 const MILLISECONDS_IN_HOUR = 3600000;
 const MILLISECONDS_IN_DAY = 86400000;
 
+const PointType = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  TRANSPORT: 'transport',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECKIN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTARAUNT: 'restaurant'
+};
+
 const DateFormat = {
   DATE_PICKER: 'd/m/y H:i',
   DAY_MONTH: 'D MMM',
@@ -50,6 +63,19 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+const BaseUrl = {
+  POINTS: 'points',
+  DESTINATIONS: 'destinations',
+  OFFERS: 'offers',
+};
+
+const ApiMetod = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
 const AppMessage = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.PAST]: 'There are no past events now',
@@ -58,20 +84,6 @@ const AppMessage = {
   [LoadingStatus.LOAD]: 'Loading...',
   [LoadingStatus.FAILED_LOAD]: 'Failed to load latest route information',
 };
-
-const PointType = {
-  TAXI: 'taxi',
-  BUS: 'bus',
-  TRAIN: 'train',
-  SHIP: 'ship',
-  TRANSPORT: 'transport',
-  DRIVE: 'drive',
-  FLIGHT: 'flight',
-  CHECKIN: 'check-in',
-  SIGHTSEEING: 'sightseeing',
-  RESTARAUNT: 'restaurant'
-};
-const DEFAULT_POINT_TYPE = PointType.FLIGHT;
 
 const DATE_CONFIG = {
   dateFormat: DateFormat.DATE_PICKER,
@@ -91,19 +103,6 @@ const DEFAULT_POINT = {
   type: PointType.FLIGHT
 };
 
-const BaseUrl = {
-  POINTS: 'points',
-  DESTINATIONS: 'destinations',
-  OFFERS: 'offers',
-};
-
-const ApiMetod = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE',
-};
-
 export {
   MILLISECONDS_IN_DAY,
   MILLISECONDS_IN_HOUR,
@@ -118,7 +117,6 @@ export {
   LoadingStatus,
   TimeLimit,
   AppMessage,
-  DEFAULT_POINT_TYPE,
   POINT_TYPES,
   DATE_CONFIG,
   DEFAULT_POINT

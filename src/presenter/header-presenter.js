@@ -15,10 +15,6 @@ export default class HeaderPresenter {
     this.#pointsModel.addObserver(this.#handlePointsChange);
   }
 
-  init() {
-    this.#renderHeaderList();
-  }
-
   get points() {
     return this.#pointsModel.points;
   }
@@ -29,6 +25,10 @@ export default class HeaderPresenter {
 
   get offers() {
     return this.#pointsModel.offers;
+  }
+
+  init() {
+    this.#renderHeaderList();
   }
 
   #renderHeaderList() {
