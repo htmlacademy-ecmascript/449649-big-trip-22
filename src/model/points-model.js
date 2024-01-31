@@ -69,7 +69,7 @@ export default class PointsModel extends Observable {
         ...this.#points.slice(index + 1),
       ];
 
-      setTimeout(() => this._notify(updateType, updatedPoint), 1000);
+      this._notify(updateType, updatedPoint);
     } catch(err) {
       throw new Error('Can\'t update point');
     }

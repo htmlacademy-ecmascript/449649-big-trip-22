@@ -3,7 +3,7 @@ import UIBlocker from '../framework/ui-blocker/ui-blocker';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import AppMessageView from '../view/app-message-view.js';
-import PointListView from '../view/points-list-view.js';
+import PointsListView from '../view/points-list-view.js';
 import SortView from '../view/sort-view.js';
 import { filter } from '../utilities.js';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utilities.js';
@@ -17,7 +17,7 @@ export default class TripPresenter {
   #filterModel = null;
   #addNewEventButton = null;
 
-  #pointListViewComponent = new PointListView();
+  #pointsListViewComponent = new PointsListView();
   #sortComponent = null;
 
   #pointPresenters = new Map();
@@ -40,7 +40,7 @@ export default class TripPresenter {
     this.#addNewEventButton.disabled = true;
 
     this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#pointListViewComponent.element,
+      pointListContainer: this.#pointsListViewComponent.element,
       pointsModel: this.#pointsModel,
       onDataChange: this.#handleViewAction,
       onResetForm: onNewEventDestroy
@@ -83,7 +83,7 @@ export default class TripPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
     if (this.#appMessageComponent) {
-      render(this.#pointListViewComponent, this.#tripContainer);
+      render(this.#pointsListViewComponent, this.#tripContainer);
       remove(this.#appMessageComponent);
     }
 
@@ -148,7 +148,7 @@ export default class TripPresenter {
   }
 
   #renderPoints = () => {
-    render(this.#pointListViewComponent, this.#tripContainer);
+    render(this.#pointsListViewComponent, this.#tripContainer);
     this.points.forEach((point) => {
       this.#renderPoint({ point: point, offers: this.#pointsModel.offers, destinations: this.#pointsModel.destinations });
     });
@@ -156,7 +156,7 @@ export default class TripPresenter {
 
   #renderPoint({ point, offers, destinations }) {
     const pointPresenter = new PointPresenter({
-      pointListContainer: this.#pointListViewComponent.element,
+      pointListContainer: this.#pointsListViewComponent.element,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
@@ -174,7 +174,7 @@ export default class TripPresenter {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
         try {
-          this.#pointsModel.updatePoint(updateType, update);
+          await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
           this.#pointPresenters.get(update.id).setAborting();
         }
@@ -227,10 +227,6 @@ export default class TripPresenter {
       this.#clearPointsList();
       this.#renderPoints();
     }
-  };
-
-  #handleNewEventFormClose = () => {
-    this.#newPointComponent.element.disabled = false;
   };
 
   #handleModeChange = () => {

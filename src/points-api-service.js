@@ -1,7 +1,7 @@
 import ApiService from './framework/api-service.js';
 import { BaseUrl, ApiMetod } from './const.js';
 
-export default class TasksApiService extends ApiService {
+export default class PointsApiService extends ApiService {
   get points() {
     return this._load({ url: BaseUrl.POINTS }).then(ApiService.parseResponse);
   }
